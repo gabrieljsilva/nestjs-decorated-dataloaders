@@ -1,0 +1,67 @@
+{
+	"name": "nestjs-decorated-dataloaders",
+	"description": "A module that helps you to create graphql dataloaders with decorators in Nest.js",
+	"version": "0.0.0",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"files": ["dist"],
+	"types": "dist/index.d.ts",
+	"author": {
+		"email": "contato@gabrieljs.dev",
+		"name": "Gabriel de Jesus Silva",
+		"url": "https://gabrieljs.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gabrieljsilva/decorated-dataloaders"
+	},
+	"scripts": {
+		"test": "vitest --run",
+		"pretest:coverage": "rimraf coverage",
+		"test:coverage": "vitest --coverage --run",
+		"prebuild": "rimraf dist",
+		"build": "tsc --build tsconfig.build.json",
+		"postbuild": "yarn local-pack",
+		"prelocal-pack": "rimraf decorated-dataloaders-*.tgz",
+		"local-pack": "npm pack",
+		"codegen": "graphql-codegen --config codegen.ts",
+		"codegen:watch": "graphql-codegen --config codegen.ts --watch"
+	},
+	"devDependencies": {
+		"@apollo/client": "^3.11.4",
+		"@apollo/server": "^4.11.0",
+		"@biomejs/biome": "1.8.3",
+		"@faker-js/faker": "^8.4.1",
+		"@graphql-codegen/cli": "5.0.2",
+		"@graphql-codegen/client-preset": "^4.3.3",
+		"@nestjs/apollo": "^12.2.0",
+		"@nestjs/common": "^10.0.0",
+		"@nestjs/core": "^10.0.0",
+		"@nestjs/graphql": "^12.2.0",
+		"@nestjs/platform-express": "^10.4.1",
+		"@nestjs/testing": "^10.4.1",
+		"@parcel/watcher": "^2.4.1",
+		"@types/node": "^20.14.11",
+		"@types/supertest": "^6.0.2",
+		"@vitest/coverage-v8": "^2.0.3",
+		"dataloader": "^2.2.2",
+		"decorated-factory": "^1.0.2",
+		"graphql": "^16.9.0",
+		"graphql-tag": "^2.12.6",
+		"lru_map": "^0.4.1",
+		"reflect-metadata": "^0.2.2",
+		"rimraf": "^6.0.1",
+		"rxjs": "^7.8.1",
+		"supertest": "^7.0.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.4",
+		"vitest": "^2.0.3"
+	},
+	"peerDependencies": {
+		"@nestjs/common": "^10.0.0",
+		"@nestjs/core": "^10.0.0",
+		"dataloader": "^2.2.2",
+		"reflect-metadata": "^0.2.2"
+	},
+	"dependencies": {}
+}
