@@ -1,7 +1,7 @@
 {
 	"name": "nestjs-decorated-dataloaders",
 	"description": "A module that helps you to create graphql dataloaders with decorators in Nest.js",
-	"version": "0.0.1-alpha.9",
+	"version": "0.0.1-alpha.10",
 	"main": "dist/index.js",
 	"license": "MIT",
 	"files": [
