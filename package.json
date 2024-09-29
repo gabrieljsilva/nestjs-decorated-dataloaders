@@ -4,9 +4,7 @@
 	"version": "0.0.1-alpha.4",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
