@@ -46,10 +46,14 @@ import { GroupModule } from "./modules/group/group.module";
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
-    DataloaderModule.forRoot({
-      cache: true,
-      maxBatchSize: 100,
-      getCacheMap: () => new LRUMap(100),
+    DataloaderModule.register({
+        global: true,
+        dataloaderOptions: {
+            cache: true,
+            name: 'MyAwesomeDataloader',
+            getCacheMap: () => new LRUMap(100),
+            maxBatchSize: 100,
+        },
     }),
     UserModule,
     PhotoModule,
@@ -60,9 +64,11 @@ export class AppModule {}
 ```
 
 In this configuration:
+- `global: true` ensures that the dataloader service is available throughout the application.
 - `cache`: Determines if the dataloader should cache results.
 - `maxBatchSize`: Controls the maximum number of requests batched together.
 - `getCacheMap`: Allows for a custom cache implementation (e.g., LRU Cache).
+- `name`: The name of the dataloader, used by tracking services.
 
 ### Relations Setup with Decorators
 
