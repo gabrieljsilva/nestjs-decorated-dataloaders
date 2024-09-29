@@ -1,6 +1,6 @@
 # Nestjs Decorated Dataloaders
 
-A Nest.js module designed to simplify the creation of GraphQL dataloaders using decorators, solving the N+1 problem with ease and elegance.
+A Nest.js module designed to simplify the creation of GraphQL dataloaders using decorators, solving the N+1 problem in a declarative way.
 
 ## The N+1 Problem
 
