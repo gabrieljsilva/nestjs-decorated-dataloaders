@@ -6,7 +6,7 @@ export declare enum RelationType {
 }
 export type JoinProperty = string | number;
 export type DataloaderKey = string;
-export type AliasForReturnFn = () => Type;
+export type AliasForReturnFn = <T = any>() => Type<T> | Function;
 export type RelationField = string;
 export type RelationNodeFn<Of = any> = () => Type<Of>;
 export declare class RelationMetadata<Child = any, Parent = any> {

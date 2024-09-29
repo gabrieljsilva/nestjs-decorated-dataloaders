@@ -35,6 +35,9 @@ class AdjacencyGraph {
         }
         return newGraph;
     }
+    forEach(callbackFn) {
+        this.adjacencyList.forEach(callbackFn);
+    }
 }
 exports.AdjacencyGraph = AdjacencyGraph;
 //# sourceMappingURL=adjacency-graph.js.map

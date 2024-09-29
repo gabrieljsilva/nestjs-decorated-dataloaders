@@ -27,6 +27,11 @@ let DataloaderService = class DataloaderService {
         this.dataloadersMappedByParentField = new WeakMap();
     }
     async load(child, params) {
+        const { key, metadata, args } = this.extractMetadata(child, params);
+        const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+        return dataloader.load(key);
+    }
+    extractMetadata(child, params) {
         const isArray = Array.isArray(child);
         const actualChild = isArray ? child[0] : child;
         const { by, from, field } = params;
@@ -40,8 +45,11 @@ let DataloaderService = class DataloaderService {
         const metadata = metadataMap.get(field) || metadataMap.values().next().value;
         const [parent, args = []] = by;
         const key = dataloader_mapper_1.DataloaderMapper.resolvePath(parent, metadata.by);
-        const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
-        return dataloader.load(key);
+        return {
+            key,
+            metadata,
+            args,
+        };
     }
     getOrCreateDataloader(params, metadata, ...args) {
         const field = params.field || metadata.field;

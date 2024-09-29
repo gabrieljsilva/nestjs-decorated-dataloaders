@@ -15,6 +15,7 @@ export declare class DataloaderService {
     constructor(moduleRef: ModuleRef, dataloaderMetadataService: DataloaderMetadataService, cacheMapService: CacheMapService);
     load<Parent, Child>(child: Type<Child>, params: LoadParams<Parent>): Promise<Child>;
     load<Parent, Child>(child: [Type<Child>], params: LoadParams<Parent>): Promise<Child[]>;
+    private extractMetadata;
     private getOrCreateDataloader;
     private createDataloader;
 }

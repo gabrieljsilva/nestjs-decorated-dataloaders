@@ -1,10 +1,7 @@
 import { type DynamicModule } from "@nestjs/common";
 import { CacheMapServiceOptions } from "./cache-map.service";
-interface DataloaderModuleOptions {
-    global?: boolean;
-    dataloaderOptions?: CacheMapServiceOptions;
-}
+type DataloaderModuleOptions = CacheMapServiceOptions;
 export declare class DataloaderModule {
-    static register(options?: DataloaderModuleOptions): DynamicModule;
+    static forRoot(options?: DataloaderModuleOptions): DynamicModule;
 }
 export {};
