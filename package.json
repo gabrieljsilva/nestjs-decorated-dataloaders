@@ -4,9 +4,7 @@
 	"version": "0.0.1-alpha.0",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -15,7 +13,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/gabrieljsilva/decorated-dataloaders"
+		"url": "https://github.com/gabrieljsilva/nestjs-decorated-dataloaders.git"
 	},
 	"scripts": {
 		"test": "vitest --run",
