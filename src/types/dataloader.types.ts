@@ -8,7 +8,7 @@ export enum RelationType {
 
 export type JoinProperty = string | number;
 export type DataloaderKey = string;
-export type AliasForReturnFn = () => Type | Function;
+export type AliasForReturnFn = <T = any>() => Type<T> | Function;
 export type RelationField = string;
 export type RelationNodeFn<Of = any> = () => Type<Of>;
 
