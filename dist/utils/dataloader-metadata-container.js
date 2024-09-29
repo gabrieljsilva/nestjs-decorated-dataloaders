@@ -10,10 +10,7 @@ class DataloaderMetadataContainer {
         DataloaderMetadataContainer.relations.addEdge(parent, child, relationMetadata);
     }
     static resolveRelations() {
-        return DataloaderMetadataContainer.relations.transform((vertex) => vertex(), (edge, vertex) => {
-            console.log(edge, vertex);
-            return edge;
-        });
+        return DataloaderMetadataContainer.relations.transform((vertex) => vertex(), (edge) => edge);
     }
     static setDataloaderHandler(key, provider) {
         if (DataloaderMetadataContainer.dataloaderHandlersMappedByKey.has(key)) {

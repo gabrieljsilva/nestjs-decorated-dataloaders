@@ -35,9 +35,19 @@ class DataloaderMapper {
     static oneToOne(metadata, keys, entities) {
         const entitiesMappedByKey = new Map();
         for (const entity of entities) {
-            const key = DataloaderMapper.resolvePath(entity, metadata.where);
-            if (key) {
-                entitiesMappedByKey.set(key, entity);
+            const joinKeyOrKeys = DataloaderMapper.resolvePath(entity, metadata.where);
+            const isArray = Array.isArray(joinKeyOrKeys);
+            if (isArray) {
+                for (const key of joinKeyOrKeys) {
+                    if (!entitiesMappedByKey.has(key)) {
+                        entitiesMappedByKey.set(key, entity);
+                    }
+                }
+            }
+            else if (joinKeyOrKeys) {
+                if (!entitiesMappedByKey.has(joinKeyOrKeys)) {
+                    entitiesMappedByKey.set(joinKeyOrKeys, entity);
+                }
             }
         }
         return keys.map((key) => entitiesMappedByKey.get(key) || null);

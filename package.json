@@ -4,9 +4,7 @@
 	"version": "0.0.1-alpha.8",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -27,7 +25,8 @@
 		"prelocal-pack": "rimraf decorated-dataloaders-*.tgz",
 		"local-pack": "npm pack",
 		"codegen": "graphql-codegen --config codegen.ts",
-		"codegen:watch": "graphql-codegen --config codegen.ts --watch"
+		"codegen:watch": "graphql-codegen --config codegen.ts --watch",
+		"prepublish": "yarn build"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.11.4",

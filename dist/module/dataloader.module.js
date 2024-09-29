@@ -6,15 +6,14 @@ const cache_map_service_1 = require("./cache-map.service");
 const dataloader_metadata_service_1 = require("./dataloader-metadata.service");
 const dataloader_service_1 = require("./dataloader.service");
 class DataloaderModule {
-    static register(options) {
-        const { global = false, dataloaderOptions = {} } = options || {};
+    static forRoot(options = {}) {
         return {
             module: DataloaderModule,
             providers: [
                 dataloader_service_1.DataloaderService,
                 {
                     provide: dataloader_metadata_service_1.DataloaderMetadataService,
-                    useFactory: () => {
+                    useFactory: async () => {
                         const relations = dataloader_metadata_container_1.DataloaderMetadataContainer.resolveRelations();
                         const aliases = dataloader_metadata_container_1.DataloaderMetadataContainer.resolveAliases();
                         const dataloaderHandlers = dataloader_metadata_container_1.DataloaderMetadataContainer.getDataloaderHandlers();
@@ -23,11 +22,11 @@ class DataloaderModule {
                 },
                 {
                     provide: cache_map_service_1.CacheMapService,
-                    useValue: new cache_map_service_1.CacheMapService(dataloaderOptions),
+                    useValue: new cache_map_service_1.CacheMapService(options),
                 },
             ],
             exports: [dataloader_service_1.DataloaderService],
-            global: global,
+            global: true,
             imports: [],
         };
     }
