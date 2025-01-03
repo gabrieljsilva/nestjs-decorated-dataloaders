@@ -1,7 +1,7 @@
 import { Type } from "@nestjs/common";
 import { RelationMetadata, RelationNodeFn, RelationType } from "../types/dataloader.types";
 import { Paths } from "../types/paths.type";
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
+import { dataloaderMetadata } from "../constants";
 
 interface LoadManyOptions<Child = any, Parent = any> {
 	by: Paths<Parent>;
@@ -20,7 +20,7 @@ export function LoadMany<Child, Parent = any>(child: RelationNodeFn<Child>, opti
 	return (target: NonNullable<any>, propertyKey: string) => {
 		const parent = target.constructor as Type;
 
-		DataloaderMetadataContainer.AddRelationMetadata(
+		dataloaderMetadata.AddRelationMetadata(
 			() => parent,
 			child,
 			propertyKey,

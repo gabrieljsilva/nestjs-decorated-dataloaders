@@ -1,7 +1,7 @@
 import type { Type } from "@nestjs/common";
 import { RelationMetadata, RelationNodeFn, RelationType } from "../types/dataloader.types";
 import { Paths } from "../types/paths.type";
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
+import { dataloaderMetadata } from "../constants";
 
 interface LoadOneOptions<Child, Parent> {
 	by: Paths<Parent>;
@@ -20,7 +20,7 @@ export function LoadOne<Child, Parent = any>(child: RelationNodeFn<Child>, optio
 	return (target: NonNullable<any>, propertyKey: string) => {
 		const parent = target.constructor as Type;
 
-		DataloaderMetadataContainer.AddRelationMetadata(
+		dataloaderMetadata.AddRelationMetadata(
 			() => parent,
 			child,
 			propertyKey,

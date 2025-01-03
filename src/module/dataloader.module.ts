@@ -1,5 +1,5 @@
 import { type DynamicModule } from "@nestjs/common";
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
+import { dataloaderMetadata } from "../constants";
 import { CacheMapService, CacheMapServiceOptions } from "./cache-map.service";
 import { DataloaderMetadataService } from "./dataloader-metadata.service";
 import { DataloaderService } from "./dataloader.service";
@@ -19,9 +19,9 @@ export class DataloaderModule {
 						 * Resolve relations of DataloaderMetadataContainer
 						 * after all entities have been loaded and transformed it into an appropriate data structure (Graph)
 						 */
-						const relations = DataloaderMetadataContainer.resolveRelations();
-						const aliases = DataloaderMetadataContainer.resolveAliases();
-						const dataloaderHandlers = DataloaderMetadataContainer.getDataloaderHandlers();
+						const relations = dataloaderMetadata.resolveRelations();
+						const aliases = dataloaderMetadata.resolveAliases();
+						const dataloaderHandlers = dataloaderMetadata.getDataloaderHandlers();
 
 						return new DataloaderMetadataService(relations, aliases, dataloaderHandlers);
 					},
