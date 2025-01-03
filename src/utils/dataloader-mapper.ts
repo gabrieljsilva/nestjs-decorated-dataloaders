@@ -79,6 +79,9 @@ export class DataloaderMapper {
 					}
 					current = results.length ? results : undefined;
 				} else {
+					if (current === undefined) {
+						return undefined;
+					}
 					current = current[part];
 				}
 				part = "";
