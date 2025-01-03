@@ -1,6 +1,6 @@
 import type { Type } from "@nestjs/common";
-import { AliasForReturnFn } from "../types/dataloader.types";
 import { dataloaderMetadata } from "../constants";
+import { AliasForReturnFn } from "../types/dataloader.types";
 
 /**
  * You can't use decorators in abstract classes or interfaces

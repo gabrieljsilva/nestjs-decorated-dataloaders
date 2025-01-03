@@ -1,5 +1,5 @@
-import { DataloaderHandlerMetadata } from "../types/dataloader-handler-metadata";
 import { dataloaderMetadata } from "../constants";
+import { DataloaderHandlerMetadata } from "../types/dataloader-handler-metadata";
 
 /**
  * Decorator used to define a DataloaderHandler method in a class.

@@ -1,7 +1,7 @@
 import { Type } from "@nestjs/common";
+import { dataloaderMetadata } from "../constants";
 import { RelationMetadata, RelationNodeFn, RelationType } from "../types/dataloader.types";
 import { Paths } from "../types/paths.type";
-import { dataloaderMetadata } from "../constants";
 
 interface LoadManyOptions<Child = any, Parent = any> {
 	by: Paths<Parent>;

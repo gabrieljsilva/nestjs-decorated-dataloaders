@@ -1,3 +1,3 @@
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
+import { DataloaderMetadataContainer } from "../utils";
 
 export const dataloaderMetadata = new DataloaderMetadataContainer();
