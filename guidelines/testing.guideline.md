@@ -231,3 +231,5 @@ export class UserEntity {
   email: string;
 }
 ```
+
+> IMPORTANT: Each file test should have only "describe" declaration

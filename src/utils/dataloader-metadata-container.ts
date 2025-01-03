@@ -10,9 +10,20 @@ import {
 } from "../types/dataloader.types";
 
 export class DataloaderMetadataContainer {
-	private readonly relations = new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
-	private readonly aliases = new Map<Type, AliasForReturnFn>();
-	private readonly dataloaderHandlersMappedByKey = new Map<DataloaderKey, DataloaderHandlerMetadata>();
+	private readonly relations: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+	private readonly aliases: Map<Type, AliasForReturnFn>;
+	private readonly dataloaderHandlersMappedByKey: Map<DataloaderKey, DataloaderHandlerMetadata>;
+
+	constructor(args?: {
+		relations?: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+		aliases?: Map<Type, AliasForReturnFn>;
+		dataloaderHandlersMappedByKey?: Map<DataloaderKey, DataloaderHandlerMetadata>;
+	}) {
+		this.relations = args?.relations ?? new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
+		this.aliases = args?.aliases ?? new Map<Type, AliasForReturnFn>();
+		this.dataloaderHandlersMappedByKey =
+			args?.dataloaderHandlersMappedByKey ?? new Map<DataloaderKey, DataloaderHandlerMetadata>();
+	}
 
 	AddRelationMetadata<Parent, Child>(
 		parent: RelationNodeFn<Parent>,
@@ -20,9 +31,12 @@ export class DataloaderMetadataContainer {
 		field: string,
 		metadata: RelationMetadata,
 	) {
-		let relationMetadata = this.relations.getEdges(parent)?.get(child);
-		relationMetadata ||= new Map<RelationField, RelationMetadata>([[field, metadata]]);
-		this.relations.addEdge(parent, child, relationMetadata);
+		const parentClass = parent;
+		const childClass = child;
+		const relationMetadata =
+			this.relations.getEdges(parentClass)?.get(childClass) ?? new Map<RelationField, RelationMetadata>();
+		relationMetadata.set(field, metadata);
+		this.relations.addEdge(parentClass, childClass, relationMetadata);
 	}
 
 	// Initially, the relationships are defined as functions that return the corresponding types.
