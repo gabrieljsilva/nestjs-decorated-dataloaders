@@ -233,3 +233,5 @@ export class UserEntity {
 ```
 
 > IMPORTANT: Each file test should have only "describe" declaration
+> IMPORTANT: Each file test should not have nested "describe". Should not have describe inside another describe
+> IMPORTANT: Check for unused variables and unused imports to not affect the performance of the tests execution

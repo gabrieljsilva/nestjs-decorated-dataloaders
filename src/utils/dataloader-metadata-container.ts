@@ -9,20 +9,27 @@ import {
 	RelationNodeFn,
 } from "../types/dataloader.types";
 
-export class DataloaderMetadataContainer {
-	private readonly relations: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
-	private readonly aliases: Map<Type, AliasForReturnFn>;
-	private readonly dataloaderHandlersMappedByKey: Map<DataloaderKey, DataloaderHandlerMetadata>;
+interface DataloaderMetadataContainerParams {
+	relations?: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+	aliases?: Map<Type, AliasForReturnFn>;
+	dataloaderHandlersMappedByKey?: Map<DataloaderKey, DataloaderHandlerMetadata>;
+}
 
-	constructor(args?: {
-		relations?: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
-		aliases?: Map<Type, AliasForReturnFn>;
-		dataloaderHandlersMappedByKey?: Map<DataloaderKey, DataloaderHandlerMetadata>;
-	}) {
-		this.relations = args?.relations ?? new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
-		this.aliases = args?.aliases ?? new Map<Type, AliasForReturnFn>();
+export class DataloaderMetadataContainer {
+	private relations: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+	private aliases: Map<Type, AliasForReturnFn>;
+	private dataloaderHandlersMappedByKey: Map<DataloaderKey, DataloaderHandlerMetadata>;
+
+	constructor(args?: DataloaderMetadataContainerParams) {
+		this.start(args);
+	}
+
+	start(args?: DataloaderMetadataContainerParams) {
+		const { relations, aliases, dataloaderHandlersMappedByKey } = args || {};
+		this.relations = relations ?? new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
+		this.aliases = aliases ?? new Map<Type, AliasForReturnFn>();
 		this.dataloaderHandlersMappedByKey =
-			args?.dataloaderHandlersMappedByKey ?? new Map<DataloaderKey, DataloaderHandlerMetadata>();
+			dataloaderHandlersMappedByKey ?? new Map<DataloaderKey, DataloaderHandlerMetadata>();
 	}
 
 	AddRelationMetadata<Parent, Child>(
