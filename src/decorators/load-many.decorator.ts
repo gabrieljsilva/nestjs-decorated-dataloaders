@@ -10,7 +10,11 @@ interface LoadManyOptions<Child = any, Parent = any> {
 }
 
 /**
- * Decorator to define a OneToMany relation between two entities.
+ *
+ * @deprecated this decorator is deprecated in favor of "Load" decorator.
+ * this feature will be removed in the next major release
+ *
+ * @description Decorator to define a OneToMany relation between two entities.
  * by: the path to the parent entity used to join the child entity
  * where: the path to the child entity used to join the parent entity
  * on: the name of the DataloaderHandler used to load the data from some datasource
