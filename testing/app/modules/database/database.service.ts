@@ -5,10 +5,12 @@ import { PostEntity } from "../post/post.entity";
 import { UserEntity } from "../user/user.entity";
 import { GroupEntity } from "../group/group.entity";
 import { UserGroupEntity } from "../user-group/user-group.entity";
+import { CategoryEntity } from "../category/category.entity";
+import { CategoryPostEntity } from "../category-post/category-post.entity";
 
 @Injectable()
 export class DatabaseService {
-	private data = this.generateData();
+	public data = this.generateData();
 	private generateData() {
 		const factory = new Factory(fakerPT_BR);
 
@@ -66,13 +68,32 @@ export class DatabaseService {
 			group.userGroups = userGroups.filter((userGroup) => userGroup.groupId === group.id);
 		}
 
+		const categories = factory.newList(CategoryEntity, 5);
+
+		const categoryPosts: Array<CategoryPostEntity> = [];
+
+		for (const post of posts) {
+			for (const category of categories) {
+				const categoryPost = factory.new(CategoryPostEntity);
+				categoryPost.categoryId = category.id;
+				categoryPost.postId = post.id;
+				categoryPosts.push(categoryPost);
+			}
+		}
+
 		return {
 			posts,
 			comments,
 			users,
 			photos,
 			groups,
+			categories,
+			categoryPosts,
 		};
+	}
+
+	public getCategories() {
+		return this.data.categories;
 	}
 
 	public getPosts() {
@@ -93,5 +114,9 @@ export class DatabaseService {
 
 	public getGroups() {
 		return this.data.groups;
+	}
+
+	public getCategoryPosts() {
+		return this.data.categoryPosts;
 	}
 }

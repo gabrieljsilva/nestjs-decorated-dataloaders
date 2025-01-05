@@ -4,6 +4,7 @@ import { gql } from "../../__generated__";
 import { startTestEnvironment } from "../../testing-environment/start-test-environment";
 import { TestClientService } from "../../testing-environment/test-client/test-client.service";
 import { TestServerService } from "../../testing-environment/test-server/test-server.service";
+import { N } from "vitest/dist/chunks/reporters.D7Jzd9GS";
 
 describe("loader", () => {
 	let client: TestClientService;
@@ -91,6 +92,46 @@ describe("loader", () => {
 					createdAt: expect.any(String),
 				},
 			});
+		}
+	});
+
+	it("should list posts with mapped categories", async () => {
+		const query = gql(/* GraphQL */ `
+			query PostsWithCategories {
+				posts {
+					id
+					title
+					content
+	                createdAt
+					categories {
+						id
+						name
+					}
+				}
+			}
+		`);
+
+		const response = await client.query({ query });
+
+		console.log(JSON.stringify(response, null, 2));
+
+		for (const post of response.data.posts) {
+			expect(post).toEqual({
+				id: expect.any(Number),
+				title: expect.any(String),
+				content: expect.any(String),
+				createdAt: expect.any(String),
+				categories: expect.any(Array),
+			});
+
+			expect(post.categories.length > 0).toBeTruthy();
+
+			for (const category of post.categories) {
+				expect(category).toEqual({
+					id: expect.any(Number),
+					name: expect.any(String),
+				});
+			}
 		}
 	});
 });

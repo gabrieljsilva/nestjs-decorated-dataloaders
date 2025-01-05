@@ -19,4 +19,11 @@ export class PostRepository {
 	async findPostsByCommentIds(commentsIds: number[]): Promise<PostEntity[]> {
 		return this.database.getPosts().filter((post) => commentsIds.includes(post.id));
 	}
+
+    @DataloaderHandler("LOAD_CATEGORIES_BY_POSTS")
+    async findCategoriesByPostIds(postIds: number[]) {
+        const categoryPosts = this.database.data.categoryPosts.filter(categoryPost => postIds.includes(categoryPost.postId));
+        const categoriesIds = categoryPosts.map(categoryPost => categoryPost.categoryId);
+        return this.database.getCategories().filter(category => categoriesIds.includes(category.id));
+    }
 }

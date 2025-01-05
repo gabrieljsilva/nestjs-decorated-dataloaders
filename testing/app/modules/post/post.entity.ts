@@ -1,7 +1,8 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
 import { Load } from "src/decorators/load.decorator";
-import { LOAD_COMMENTS_BY_POSTS } from "testing/app/constants";
+import { LOAD_CATEGORY_BY_POSTS, LOAD_COMMENTS_BY_POSTS } from "testing/app/constants";
+import { CategoryEntity } from "../category/category.entity";
 import { CommentEntity } from "../comment/comment.entity";
 
 @ObjectType()
@@ -25,4 +26,8 @@ export class PostEntity {
 	@Load(() => [CommentEntity], { key: "id", parentKey: "postId", handler: LOAD_COMMENTS_BY_POSTS })
 	@FactoryRelationField(() => [CommentEntity])
 	comments: CommentEntity[];
+
+	@Load(() => [CategoryEntity], { key: "id", parentKey: "categoryPosts.postId", handler: LOAD_CATEGORY_BY_POSTS })
+	@FactoryRelationField(() => [CategoryEntity])
+	categories: CategoryEntity[];
 }
