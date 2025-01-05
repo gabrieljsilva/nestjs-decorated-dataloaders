@@ -4,7 +4,7 @@ import { DataloaderHandlerMetadata } from "../types/dataloader-handler-metadata"
 import { DataloaderKey, RelationMetadata } from "../types/dataloader.types";
 
 /**
- * Intermediate Service between DataloaderMetadataContainer and Nest.js DI Container;
+ * Intermediate Service between dataloaderMetadata and Nest.js DI Container;
  * It provides a way to access the metadata stored in the DataloaderMetadataContainer, inside the DI Container.
  */
 @Injectable()

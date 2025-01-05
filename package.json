@@ -1,10 +1,12 @@
 {
 	"name": "nestjs-decorated-dataloaders",
 	"description": "A module that helps you to create graphql dataloaders with decorators in Nest.js",
-	"version": "0.0.1-alpha.13",
+	"version": "0.1.0-alpha.0",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -17,6 +19,7 @@
 	},
 	"scripts": {
 		"test": "vitest --run",
+		"test:e2e": "vitest --config testing/vitest.e2e.config.ts --run",
 		"pretest:coverage": "rimraf coverage",
 		"test:coverage": "vitest --coverage --run",
 		"prebuild": "rimraf dist",
@@ -25,8 +28,7 @@
 		"prelocal-pack": "rimraf decorated-dataloaders-*.tgz",
 		"local-pack": "npm pack",
 		"codegen": "graphql-codegen --config codegen.ts",
-		"codegen:watch": "graphql-codegen --config codegen.ts --watch",
-		"prepublish": "yarn build"
+		"codegen:watch": "graphql-codegen --config codegen.ts --watch"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.11.4",
@@ -42,9 +44,11 @@
 		"@nestjs/platform-express": "^10.4.1",
 		"@nestjs/testing": "^10.4.1",
 		"@parcel/watcher": "^2.4.1",
+		"@suites/di.nestjs": "^3.0.1",
+		"@suites/doubles.vitest": "^3.0.1",
 		"@types/node": "^20.14.11",
 		"@types/supertest": "^6.0.2",
-		"@vitest/coverage-v8": "^2.0.3",
+		"@vitest/coverage-v8": "^2.1.8",
 		"dataloader": "^2.2.2",
 		"decorated-factory": "^1.0.2",
 		"graphql": "^16.9.0",
@@ -56,7 +60,8 @@
 		"supertest": "^7.0.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.5.4",
-		"vitest": "^2.0.3"
+		"vitest": "^2.1.8",
+		"@suites/unit": "^3.0.1"
 	},
 	"peerDependencies": {
 		"@nestjs/common": ">=9.0.0 <11.0.0",

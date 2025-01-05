@@ -31,6 +31,21 @@ let DataloaderService = class DataloaderService {
         const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
         return dataloader.load(key);
     }
+    prime(key, value, params) {
+        const { metadata, args } = this.extractMetadata(undefined, params);
+        const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+        dataloader.prime(key, value);
+    }
+    clear(key, params) {
+        const { metadata, args } = this.extractMetadata(undefined, params);
+        const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+        dataloader.clear(key);
+    }
+    clearAll(params) {
+        const { metadata, args } = this.extractMetadata(undefined, params);
+        const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+        dataloader.clearAll();
+    }
     extractMetadata(child, params) {
         const isArray = Array.isArray(child);
         const actualChild = isArray ? child[0] : child;

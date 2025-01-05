@@ -1,7 +1,7 @@
 import type { Type } from "@nestjs/common";
+import { dataloaderMetadata } from "../constants";
 import { RelationMetadata, RelationNodeFn, RelationType } from "../types/dataloader.types";
 import { Paths } from "../types/paths.type";
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
 
 interface LoadOneOptions<Child, Parent> {
 	by: Paths<Parent>;
@@ -10,7 +10,11 @@ interface LoadOneOptions<Child, Parent> {
 }
 
 /**
- * Decorator to define a oneToOne relation between two entities.
+ *
+ * @deprecated this decorator is deprecated in favor of "Load" decorator.
+ * this feature will be removed in the next major release
+ *
+ * @description Decorator to define a oneToOne relation between two entities.
  * by: the path to the parent entity used to join the child entity
  * where: the path to the child entity used to join the parent entity
  * on: the name of the DataloaderHandler used to load the data from some datasource
@@ -20,7 +24,7 @@ export function LoadOne<Child, Parent = any>(child: RelationNodeFn<Child>, optio
 	return (target: NonNullable<any>, propertyKey: string) => {
 		const parent = target.constructor as Type;
 
-		DataloaderMetadataContainer.AddRelationMetadata(
+		dataloaderMetadata.AddRelationMetadata(
 			() => parent,
 			child,
 			propertyKey,

@@ -45,6 +45,27 @@ export class DataloaderService {
 		return dataloader.load(key);
 	}
 
+	prime<Parent, Child>(key: JoinProperty, value: Child, params: LoadParams<Parent>): void;
+	prime<Parent, Child>(key: JoinProperty, value: Child, params: LoadParams<Parent>): void {
+		const { metadata, args } = this.extractMetadata(undefined, params);
+		const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+		dataloader.prime(key, value);
+	}
+
+	clear<Parent>(key: JoinProperty, params: LoadParams<Parent>): void;
+	clear<Parent>(key: JoinProperty, params: LoadParams<Parent>): void {
+		const { metadata, args } = this.extractMetadata(undefined, params);
+		const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+		dataloader.clear(key);
+	}
+
+	clearAll<Parent>(params: LoadParams<Parent>): void;
+	clearAll<Parent>(params: LoadParams<Parent>): void {
+		const { metadata, args } = this.extractMetadata(undefined, params);
+		const dataloader = this.getOrCreateDataloader(params, metadata, ...args);
+		dataloader.clearAll();
+	}
+
 	private extractMetadata<Parent, Child>(child: Type<Child> | [Type<Child>], params: LoadParams<Parent>) {
 		const isArray = Array.isArray(child);
 		const actualChild = isArray ? child[0] : child;

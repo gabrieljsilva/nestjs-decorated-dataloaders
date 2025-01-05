@@ -1,6 +1,6 @@
 import type { Type } from "@nestjs/common";
+import { dataloaderMetadata } from "../constants";
 import { AliasForReturnFn } from "../types/dataloader.types";
-import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-container";
 
 /**
  * You can't use decorators in abstract classes or interfaces
@@ -8,6 +8,6 @@ import { DataloaderMetadataContainer } from "../utils/dataloader-metadata-contai
  */
 export function AliasFor(provider: AliasForReturnFn) {
 	return (target: NonNullable<unknown>) => {
-		DataloaderMetadataContainer.setAlias(target as Type, provider);
+		dataloaderMetadata.setAlias(target as Type, provider);
 	};
 }

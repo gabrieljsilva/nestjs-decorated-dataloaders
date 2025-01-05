@@ -9,58 +9,79 @@ import {
 	RelationNodeFn,
 } from "../types/dataloader.types";
 
-export class DataloaderMetadataContainer {
-	private static readonly relations = new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
-	private static readonly aliases = new Map<Type, AliasForReturnFn>();
-	private static readonly dataloaderHandlersMappedByKey = new Map<DataloaderKey, DataloaderHandlerMetadata>();
+interface DataloaderMetadataContainerParams {
+	relations?: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+	aliases?: Map<Type, AliasForReturnFn>;
+	dataloaderHandlersMappedByKey?: Map<DataloaderKey, DataloaderHandlerMetadata>;
+}
 
-	static AddRelationMetadata<Parent, Child>(
+export class DataloaderMetadataContainer {
+	private relations: AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>;
+	private aliases: Map<Type, AliasForReturnFn>;
+	private dataloaderHandlersMappedByKey: Map<DataloaderKey, DataloaderHandlerMetadata>;
+
+	constructor(args?: DataloaderMetadataContainerParams) {
+		this.start(args);
+	}
+
+	start(args?: DataloaderMetadataContainerParams) {
+		const { relations, aliases, dataloaderHandlersMappedByKey } = args || {};
+		this.relations = relations ?? new AdjacencyGraph<RelationNodeFn, Map<RelationField, RelationMetadata>>();
+		this.aliases = aliases ?? new Map<Type, AliasForReturnFn>();
+		this.dataloaderHandlersMappedByKey =
+			dataloaderHandlersMappedByKey ?? new Map<DataloaderKey, DataloaderHandlerMetadata>();
+	}
+
+	AddRelationMetadata<Parent, Child>(
 		parent: RelationNodeFn<Parent>,
 		child: RelationNodeFn<Child>,
 		field: string,
 		metadata: RelationMetadata,
 	) {
-		let relationMetadata = DataloaderMetadataContainer.relations.getEdges(parent)?.get(child);
-		relationMetadata ||= new Map<RelationField, RelationMetadata>([[field, metadata]]);
-		DataloaderMetadataContainer.relations.addEdge(parent, child, relationMetadata);
+		const parentClass = parent;
+		const childClass = child;
+		const relationMetadata =
+			this.relations.getEdges(parentClass)?.get(childClass) ?? new Map<RelationField, RelationMetadata>();
+		relationMetadata.set(field, metadata);
+		this.relations.addEdge(parentClass, childClass, relationMetadata);
 	}
 
 	// Initially, the relationships are defined as functions that return the corresponding types.
 	// On module initializes, these relationships are resolved to their actual types rather than remaining as functions.
 	// This approach is used to mitigate circular dependency issues by using lazy loading technique for entities.
-	static resolveRelations() {
-		return DataloaderMetadataContainer.relations.transform(
+	resolveRelations() {
+		return this.relations.transform(
 			(vertex) => vertex(),
 			(edge) => edge,
 		);
 	}
 
-	static setDataloaderHandler(key: DataloaderKey, provider: DataloaderHandlerMetadata) {
-		if (DataloaderMetadataContainer.dataloaderHandlersMappedByKey.has(key)) {
+	setDataloaderHandler(key: DataloaderKey, provider: DataloaderHandlerMetadata) {
+		if (this.dataloaderHandlersMappedByKey.has(key)) {
 			throw new Error(`Dataloader provider with key ${key} already exists`);
 		}
-		DataloaderMetadataContainer.dataloaderHandlersMappedByKey.set(key, provider);
+		this.dataloaderHandlersMappedByKey.set(key, provider);
 	}
 
-	static getDataloaderHandlers() {
-		return DataloaderMetadataContainer.dataloaderHandlersMappedByKey;
+	getDataloaderHandlers() {
+		return this.dataloaderHandlersMappedByKey;
 	}
 
-	static hasAlias(alias: Type): boolean {
-		return DataloaderMetadataContainer.aliases.has(alias);
+	hasAlias(alias: Type): boolean {
+		return this.aliases.has(alias);
 	}
 
-	static setAlias(target: Type, alias: AliasForReturnFn) {
-		if (DataloaderMetadataContainer.hasAlias(target)) {
+	setAlias(target: Type, alias: AliasForReturnFn) {
+		if (this.hasAlias(target)) {
 			throw new Error(`Alias for ${target} already exists`);
 		}
 
-		DataloaderMetadataContainer.aliases.set(target, alias);
+		this.aliases.set(target, alias);
 	}
 
-	static resolveAliases() {
+	resolveAliases() {
 		const aliases = new Map<Type, Type>();
-		for (const [key, aliasReturnFn] of DataloaderMetadataContainer.aliases.entries()) {
+		for (const [key, aliasReturnFn] of this.aliases.entries()) {
 			aliases.set(key, aliasReturnFn() as Type);
 		}
 		return aliases;

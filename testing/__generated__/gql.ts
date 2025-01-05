@@ -13,6 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n\t\t\tquery PostsWithComments {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcomments {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttext\n\t\t\t\t\t\tpostId\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.PostsWithCommentsDocument,
+    "\n\t\t\tquery CommentsWithPosts {\n\t\t\t\tcomments {\n\t\t\t\t\tid\n\t\t\t\t\ttext\n\t\t\t\t\tpostId\n\t\t\t\t\tpost {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttitle\n\t\t\t\t\t\tcontent\n\t\t                createdAt\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.CommentsWithPostsDocument,
+    "\n\t\t\tquery PostsWithCategories {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcategories {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.PostsWithCategoriesDocument,
     "\n\t\t\tquery UsersWithPhotos {\n\t\t\t\tusers {\n\t\t\t\t\tid\n\t\t\t\t\tname\n\t\t\t\t\tcreatedAt\n\t\t\t\t\tphotos {\n\t\t\t\t\t\tid\n\t\t\t\t\t\turl\n\t\t\t\t\t\tuserId\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.UsersWithPhotosDocument,
     "\n\t\t\tquery UsersWithGroups {\n\t\t\t\tusers {\n\t\t\t\t\tid\n\t\t\t\t\tname\n\t\t\t\t\tcreatedAt\n\t\t\t\t\tgroups {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.UsersWithGroupsDocument,
     "\n\t\t\tquery FindManyPhotos {\n\t\t\t\tphotos {\n\t\t\t\t\tid\n\t\t\t\t\turl\n\t\t\t\t\tuserId\n\t\t\t\t\tuser {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t\tcreatedAt\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t": types.FindManyPhotosDocument,
@@ -32,6 +35,18 @@ const documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n\t\t\tquery PostsWithComments {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcomments {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttext\n\t\t\t\t\t\tpostId\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"): (typeof documents)["\n\t\t\tquery PostsWithComments {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcomments {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttext\n\t\t\t\t\t\tpostId\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n\t\t\tquery CommentsWithPosts {\n\t\t\t\tcomments {\n\t\t\t\t\tid\n\t\t\t\t\ttext\n\t\t\t\t\tpostId\n\t\t\t\t\tpost {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttitle\n\t\t\t\t\t\tcontent\n\t\t                createdAt\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"): (typeof documents)["\n\t\t\tquery CommentsWithPosts {\n\t\t\t\tcomments {\n\t\t\t\t\tid\n\t\t\t\t\ttext\n\t\t\t\t\tpostId\n\t\t\t\t\tpost {\n\t\t\t\t\t\tid\n\t\t\t\t\t\ttitle\n\t\t\t\t\t\tcontent\n\t\t                createdAt\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n\t\t\tquery PostsWithCategories {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcategories {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"): (typeof documents)["\n\t\t\tquery PostsWithCategories {\n\t\t\t\tposts {\n\t\t\t\t\tid\n\t\t\t\t\ttitle\n\t\t\t\t\tcontent\n\t                createdAt\n\t\t\t\t\tcategories {\n\t\t\t\t\t\tid\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

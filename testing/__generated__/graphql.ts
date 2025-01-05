@@ -18,6 +18,20 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type CategoryEntity = {
+  __typename?: 'CategoryEntity';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type CommentEntity = {
+  __typename?: 'CommentEntity';
+  id: Scalars['Int']['output'];
+  post: PostEntity;
+  postId: Scalars['Float']['output'];
+  text: Scalars['String']['output'];
+};
+
 export type GroupEntity = {
   __typename?: 'GroupEntity';
   id: Scalars['Int']['output'];
@@ -32,9 +46,21 @@ export type PhotoEntity = {
   userId: Scalars['Float']['output'];
 };
 
+export type PostEntity = {
+  __typename?: 'PostEntity';
+  categories: Array<CategoryEntity>;
+  comments: Array<CommentEntity>;
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  comments: Array<CommentEntity>;
   photos: Array<PhotoEntity>;
+  posts: Array<PostEntity>;
   users: Array<UserEntity>;
 };
 
@@ -46,6 +72,21 @@ export type UserEntity = {
   name: Scalars['String']['output'];
   photos: Array<PhotoEntity>;
 };
+
+export type PostsWithCommentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PostsWithCommentsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string, comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number }> }> };
+
+export type CommentsWithPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CommentsWithPostsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number, post: { __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string } }> };
+
+export type PostsWithCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PostsWithCategoriesQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string, categories: Array<{ __typename?: 'CategoryEntity', id: number, name: string }> }> };
 
 export type UsersWithPhotosQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -63,6 +104,9 @@ export type FindManyPhotosQueryVariables = Exact<{ [key: string]: never; }>;
 export type FindManyPhotosQuery = { __typename?: 'Query', photos: Array<{ __typename?: 'PhotoEntity', id: number, url: string, userId: number, user: { __typename?: 'UserEntity', id: number, name: string, createdAt: any } }> };
 
 
+export const PostsWithCommentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PostsWithComments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"posts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"comments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"postId"}}]}}]}}]}}]} as unknown as DocumentNode<PostsWithCommentsQuery, PostsWithCommentsQueryVariables>;
+export const CommentsWithPostsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CommentsWithPosts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"comments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"postId"}},{"kind":"Field","name":{"kind":"Name","value":"post"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<CommentsWithPostsQuery, CommentsWithPostsQueryVariables>;
+export const PostsWithCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PostsWithCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"posts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<PostsWithCategoriesQuery, PostsWithCategoriesQueryVariables>;
 export const UsersWithPhotosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UsersWithPhotos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"photos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]}}]} as unknown as DocumentNode<UsersWithPhotosQuery, UsersWithPhotosQueryVariables>;
 export const UsersWithGroupsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UsersWithGroups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"groups"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UsersWithGroupsQuery, UsersWithGroupsQueryVariables>;
 export const FindManyPhotosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FindManyPhotos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"photos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]} as unknown as DocumentNode<FindManyPhotosQuery, FindManyPhotosQueryVariables>;
