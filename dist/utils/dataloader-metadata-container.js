@@ -3,43 +3,52 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataloaderMetadataContainer = void 0;
 const adjacency_graph_1 = require("../types/adjacency-graph");
 class DataloaderMetadataContainer {
-    static AddRelationMetadata(parent, child, field, metadata) {
-        var _a;
-        let relationMetadata = (_a = DataloaderMetadataContainer.relations.getEdges(parent)) === null || _a === void 0 ? void 0 : _a.get(child);
-        relationMetadata || (relationMetadata = new Map([[field, metadata]]));
-        DataloaderMetadataContainer.relations.addEdge(parent, child, relationMetadata);
+    constructor(args) {
+        this.start(args);
     }
-    static resolveRelations() {
-        return DataloaderMetadataContainer.relations.transform((vertex) => vertex(), (edge) => edge);
+    start(args) {
+        const { relations, aliases, dataloaderHandlersMappedByKey } = args || {};
+        this.relations = relations !== null && relations !== void 0 ? relations : new adjacency_graph_1.AdjacencyGraph();
+        this.aliases = aliases !== null && aliases !== void 0 ? aliases : new Map();
+        this.dataloaderHandlersMappedByKey =
+            dataloaderHandlersMappedByKey !== null && dataloaderHandlersMappedByKey !== void 0 ? dataloaderHandlersMappedByKey : new Map();
     }
-    static setDataloaderHandler(key, provider) {
-        if (DataloaderMetadataContainer.dataloaderHandlersMappedByKey.has(key)) {
+    AddRelationMetadata(parent, child, field, metadata) {
+        var _a, _b;
+        const parentClass = parent;
+        const childClass = child;
+        const relationMetadata = (_b = (_a = this.relations.getEdges(parentClass)) === null || _a === void 0 ? void 0 : _a.get(childClass)) !== null && _b !== void 0 ? _b : new Map();
+        relationMetadata.set(field, metadata);
+        this.relations.addEdge(parentClass, childClass, relationMetadata);
+    }
+    resolveRelations() {
+        return this.relations.transform((vertex) => vertex(), (edge) => edge);
+    }
+    setDataloaderHandler(key, provider) {
+        if (this.dataloaderHandlersMappedByKey.has(key)) {
             throw new Error(`Dataloader provider with key ${key} already exists`);
         }
-        DataloaderMetadataContainer.dataloaderHandlersMappedByKey.set(key, provider);
+        this.dataloaderHandlersMappedByKey.set(key, provider);
     }
-    static getDataloaderHandlers() {
-        return DataloaderMetadataContainer.dataloaderHandlersMappedByKey;
+    getDataloaderHandlers() {
+        return this.dataloaderHandlersMappedByKey;
     }
-    static hasAlias(alias) {
-        return DataloaderMetadataContainer.aliases.has(alias);
+    hasAlias(alias) {
+        return this.aliases.has(alias);
     }
-    static setAlias(target, alias) {
-        if (DataloaderMetadataContainer.hasAlias(target)) {
+    setAlias(target, alias) {
+        if (this.hasAlias(target)) {
             throw new Error(`Alias for ${target} already exists`);
         }
-        DataloaderMetadataContainer.aliases.set(target, alias);
+        this.aliases.set(target, alias);
     }
-    static resolveAliases() {
+    resolveAliases() {
         const aliases = new Map();
-        for (const [key, aliasReturnFn] of DataloaderMetadataContainer.aliases.entries()) {
+        for (const [key, aliasReturnFn] of this.aliases.entries()) {
             aliases.set(key, aliasReturnFn());
         }
         return aliases;
     }
 }
 exports.DataloaderMetadataContainer = DataloaderMetadataContainer;
-DataloaderMetadataContainer.relations = new adjacency_graph_1.AdjacencyGraph();
-DataloaderMetadataContainer.aliases = new Map();
-DataloaderMetadataContainer.dataloaderHandlersMappedByKey = new Map();
 //# sourceMappingURL=dataloader-metadata-container.js.map

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AliasFor = AliasFor;
-const dataloader_metadata_container_1 = require("../utils/dataloader-metadata-container");
+const constants_1 = require("../constants");
 function AliasFor(provider) {
     return (target) => {
-        dataloader_metadata_container_1.DataloaderMetadataContainer.setAlias(target, provider);
+        constants_1.dataloaderMetadata.setAlias(target, provider);
     };
 }
 //# sourceMappingURL=alias-for.decorator.js.map
