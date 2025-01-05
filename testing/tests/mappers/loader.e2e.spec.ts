@@ -113,8 +113,6 @@ describe("loader", () => {
 
 		const response = await client.query({ query });
 
-		console.log(JSON.stringify(response, null, 2));
-
 		for (const post of response.data.posts) {
 			expect(post).toEqual({
 				id: expect.any(Number),
