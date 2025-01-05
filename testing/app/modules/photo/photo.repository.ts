@@ -1,25 +1,23 @@
-import { faker } from "@faker-js/faker";
-import { Injectable } from "@nestjs/common";
-import { Factory } from "decorated-factory";
+import { Inject, Injectable } from "@nestjs/common";
 import { DataloaderHandler } from "../../../../src";
 import { LOAD_PHOTOS_BY_USER } from "../../constants";
+import { DatabaseService } from "../database/database.service";
 import { PhotoEntity } from "./photo.entity";
 
 @Injectable()
 export class PhotoRepository {
+    constructor(
+        @Inject(DatabaseService)
+        private readonly database: DatabaseService,
+    ) {}
+
 	async find() {
-		const factory = new Factory(faker);
-		return factory.newList(PhotoEntity, 10);
+		return this.database.getPhotos();
 	}
 
 	@DataloaderHandler(LOAD_PHOTOS_BY_USER)
 	async findAllByUsersIds(usersIds: number[]) {
-		const factory = new Factory(faker);
-		return factory.createList(PhotoEntity, 10).override((photos) => {
-			photos.forEach((photo, index) => {
-				photo.userId = usersIds[index];
-			});
-			return photos;
-		});
+        const photos = this.database.getPhotos();
+        return photos.filter(photo => usersIds.includes(photo.userId));
 	}
 }

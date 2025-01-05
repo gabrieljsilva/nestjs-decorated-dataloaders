@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { FactoryField } from "decorated-factory";
+import { FactoryField, FactoryRelationField } from "decorated-factory";
 import { LoadMany } from "../../../../src";
 import { LOAD_GROUPS_BY_USERS, LOAD_PHOTOS_BY_USER } from "../../constants";
 import { GroupEntity } from "../group/group.entity";
@@ -24,6 +24,7 @@ export class UserEntity {
 		where: "userId",
 		on: LOAD_PHOTOS_BY_USER,
 	})
+	@FactoryRelationField(() => [PhotoEntity])
 	photos: Array<PhotoEntity>;
 
 	@LoadMany<GroupEntity, UserEntity>(() => GroupEntity, {

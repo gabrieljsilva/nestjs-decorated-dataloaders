@@ -1,26 +1,26 @@
-import { faker } from "@faker-js/faker";
-import { Injectable } from "@nestjs/common";
-import { Factory } from "decorated-factory";
+import { Inject, Injectable } from "@nestjs/common";
 import { DataloaderHandler } from "../../../../src";
 import { LOAD_GROUPS_BY_USERS } from "../../constants";
-import { GroupEntity } from "./group.entity";
+import { DatabaseService } from "../database/database.service";
+import { UserGroupEntity } from "../user-group/user-group.entity";
 
 @Injectable()
 export class GroupRepository {
-	// Simulate a database query to find groups by users ids
-	// and return a list of groups with user groups filtered by users ids
+	constructor(
+		@Inject(DatabaseService)
+		private readonly database: DatabaseService,
+	) {}
+
 	@DataloaderHandler(LOAD_GROUPS_BY_USERS)
 	async findByUsersIds(usersIds: number[]) {
-		const factory = new Factory(faker);
-		const groups = factory.newList(GroupEntity, 10, {
-			userGroups: [1],
-		});
-
-		return groups.map((group, index) => {
-			for (const userGroup of group.userGroups) {
+		const groups = this.database.getGroups();
+		return groups.map((group) => {
+			group.userGroups = usersIds.map((userId) => {
+				const userGroup = new UserGroupEntity();
+				userGroup.userId = userId;
 				userGroup.groupId = group.id;
-				userGroup.userId = usersIds[index];
-			}
+				return userGroup;
+			});
 			return group;
 		});
 	}

@@ -2,6 +2,9 @@ import { fakerPT_BR } from "@faker-js/faker";
 import { Injectable } from "@nestjs/common";
 import { Factory } from "decorated-factory";
 import { PostEntity } from "../post/post.entity";
+import { UserEntity } from "../user/user.entity";
+import { GroupEntity } from "../group/group.entity";
+import { UserGroupEntity } from "../user-group/user-group.entity";
 
 @Injectable()
 export class DatabaseService {
@@ -29,9 +32,46 @@ export class DatabaseService {
 			post.comments = undefined;
 		}
 
+		const users = factory
+			.createList(UserEntity, 5, {
+				photos: [2],
+			})
+			.override((users) => {
+				for (const user of users) {
+					for (const photo of user.photos) {
+						photo.userId = user.id;
+					}
+				}
+				return users;
+			});
+
+		const photos = users.flatMap((user) => user.photos);
+
+		for (const user of users) {
+			user.photos = undefined;
+		}
+
+		const groups = factory.newList(GroupEntity, 5);
+
+		const userGroups = users.flatMap((user) => {
+			return groups.map((group) => {
+				const userGroup = new UserGroupEntity();
+				userGroup.userId = user.id;
+				userGroup.groupId = group.id;
+				return userGroup;
+			});
+		});
+
+		for (const group of groups) {
+			group.userGroups = userGroups.filter((userGroup) => userGroup.groupId === group.id);
+		}
+
 		return {
 			posts,
 			comments,
+			users,
+			photos,
+			groups,
 		};
 	}
 
@@ -41,5 +81,17 @@ export class DatabaseService {
 
 	public getComments() {
 		return this.data.comments;
+	}
+
+	public getUsers() {
+		return this.data.users;
+	}
+
+	public getPhotos() {
+		return this.data.photos;
+	}
+
+	public getGroups() {
+		return this.data.groups;
 	}
 }
