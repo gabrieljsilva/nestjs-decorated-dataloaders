@@ -1,4 +1,4 @@
-import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
+import { INestApplication, Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import { AppModule } from "../../app/app.module";
 
@@ -10,7 +10,9 @@ export class TestServerService implements OnModuleInit {
 		const module = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
-		const app = module.createNestApplication();
+		const app = module.createNestApplication({
+			logger: new Logger(),
+		});
 		await app.init();
 		this.app = app;
 	};
