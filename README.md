@@ -177,7 +177,7 @@ query UsersWithPhotos {
 
 ## **Deprecated Decorators**
 
-### **`@LoadOne`**\*\* and \*\***`@LoadMany`**
+### **`@LoadOne`** and **`@LoadMany`**
 
 The `@LoadOne` and `@LoadMany` decorators are deprecated and will be removed in future releases. Use `@Load` instead.
 
@@ -197,7 +197,7 @@ export class UserEntity {
 }
 ```
 
-#### \*\*One-to-Many Example with \*\***`@LoadMany`**
+#### One-to-Many Example with **`@LoadMany`**
 
 ```typescript
 import { LoadMany } from "nestjs-decorated-dataloaders";
