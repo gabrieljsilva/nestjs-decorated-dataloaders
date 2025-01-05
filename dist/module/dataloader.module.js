@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataloaderModule = void 0;
-const dataloader_metadata_container_1 = require("../utils/dataloader-metadata-container");
+const constants_1 = require("../constants");
 const cache_map_service_1 = require("./cache-map.service");
 const dataloader_metadata_service_1 = require("./dataloader-metadata.service");
 const dataloader_service_1 = require("./dataloader.service");
@@ -14,9 +14,9 @@ class DataloaderModule {
                 {
                     provide: dataloader_metadata_service_1.DataloaderMetadataService,
                     useFactory: async () => {
-                        const relations = dataloader_metadata_container_1.DataloaderMetadataContainer.resolveRelations();
-                        const aliases = dataloader_metadata_container_1.DataloaderMetadataContainer.resolveAliases();
-                        const dataloaderHandlers = dataloader_metadata_container_1.DataloaderMetadataContainer.getDataloaderHandlers();
+                        const relations = constants_1.dataloaderMetadata.resolveRelations();
+                        const aliases = constants_1.dataloaderMetadata.resolveAliases();
+                        const dataloaderHandlers = constants_1.dataloaderMetadata.getDataloaderHandlers();
                         return new dataloader_metadata_service_1.DataloaderMetadataService(relations, aliases, dataloaderHandlers);
                     },
                 },
