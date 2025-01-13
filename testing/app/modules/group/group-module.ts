@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
 import { GroupRepository } from "./group.repository";
-import { DatabaseModule } from "../database/database.module";
 
 @Module({
-    imports: [DatabaseModule],
+	imports: [],
 	providers: [GroupRepository],
 	exports: [GroupRepository],
 })

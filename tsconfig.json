@@ -4,14 +4,14 @@
 		"target": "ES2017",
 		"moduleResolution": "Node",
 		"declaration": true,
-		"removeComments": true,
+		"removeComments": false,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true,
 		"outDir": "./dist",
 		"baseUrl": "./",
-		"incremental": true,
+		"incremental": false,
 		"skipLibCheck": true,
 		"strictNullChecks": false,
 		"noImplicitAny": false,
@@ -19,6 +19,6 @@
 		"forceConsistentCasingInFileNames": false,
 		"noFallthroughCasesInSwitch": false,
 		"preserveSymlinks": true,
-    	"types": ["vitest/globals"]
+		"types": ["vitest/globals"]
 	}
 }

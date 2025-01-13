@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { Load } from "src/decorators/load.decorator";
-import { LOAD_CATEGORY_BY_POSTS, LOAD_COMMENTS_BY_POSTS } from "testing/app/constants";
+import { Load } from "../../../../src";
+import { LOAD_CATEGORY_BY_POSTS, LOAD_COMMENTS_BY_POSTS } from "../../constants";
 import { CategoryEntity } from "../category/category.entity";
 import { CommentEntity } from "../comment/comment.entity";
 

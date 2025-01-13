@@ -2,25 +2,18 @@
 
 `nestjs-decorated-dataloaders` is a module designed to simplify the creation of GraphQL dataloaders using decorators, solving the N+1 problem in a declarative and scalable way.
 
----
 
-## **The N+1 Problem**
-
-The N+1 problem arises when fetching related data results in multiple database queries. For example, fetching photos for a list of users might execute one query for the users and N additional queries (one for each user) to fetch their photos. This causes unnecessary database overhead, degrading performance.
-
-`nestjs-decorated-dataloaders` minimizes database queries by batching and caching data fetches, optimizing performance and scalability.
+This module minimizes database queries by batching and caching data fetches, optimizing performance and scalability.
 
 ---
 
 ## **Installation**
 
-### Using npm
-
 ```bash
 npm install nestjs-decorated-dataloaders
 ```
 
-### Using yarn
+or using yarn:
 
 ```bash
 yarn add nestjs-decorated-dataloaders
@@ -63,48 +56,35 @@ export class AppModule {}
 
 ---
 
-## **Using the ****************************************`@Load`**************************************** Decorator**
+## **Defining Entities**
 
-The `@Load` decorator is the recommended way to define relationships for dataloaders. It supports both one-to-one and one-to-many relationships in a concise, flexible manner.
-
-### **One-to-One Example**
+### **PhotoEntity**
 
 ```typescript
-import { Load } from "nestjs-decorated-dataloaders";
-import { UserEntity } from "./user.entity";
-import { PhotoEntity } from "./photo.entity";
-
-export class UserEntity {
+export class PhotoEntity {
   id: number;
-  name: string;
-
-  @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "photoLoader" })
-  photo: PhotoEntity;
+  url: string;
+  userId: number;
 }
 ```
 
-### **One-to-Many Example**
+### **UserEntity**
 
 ```typescript
 import { Load } from "nestjs-decorated-dataloaders";
-import { UserEntity } from "./user.entity";
 import { PhotoEntity } from "./photo.entity";
 
 export class UserEntity {
   id: number;
   name: string;
 
-  @Load(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: "photoLoader" })
+  @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
+  photo: PhotoEntity;
+
+  @Load(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
   photos: PhotoEntity[];
 }
 ```
-
-### **Parameters Explained**
-
-- **`() => Entity`**: Specifies the related entity type (e.g., `PhotoEntity`). Use `() => [Entity]` for one-to-many relationships.
-- **`key`**: The property in the parent entity used for matching (e.g., `id`).
-- **`parentKey`**: The property in the related entity corresponding to the parent entity (e.g., `userId`).
-- **`handler`**: The name of the dataloader handler defined in the service using `@DataloaderHandler`.
 
 ---
 
@@ -117,9 +97,9 @@ import { DataloaderHandler } from "nestjs-decorated-dataloaders";
 import { PhotoEntity } from "./photo.entity";
 
 export class PhotoService {
-  @DataloaderHandler("photoLoader")
+  @DataloaderHandler("LOAD_PHOTOS_BY_USER_ID")
   async loadPhotosByUserIds(userIds: number[]): Promise<PhotoEntity[]> {
-    // Implement data fetching logic here
+    // Replace with actual data fetching logic
   }
 }
 ```
@@ -142,78 +122,98 @@ export class UserResolver {
 
   @ResolveField(() => PhotoEntity)
   async photo(@Parent() user: UserEntity) {
-    return this.dataloaderService.load(PhotoEntity, { from: UserEntity, by: [user] });
+    return this.dataloaderService.load({ from: UserEntity, field: "photo", data: user });
   }
 
   @ResolveField(() => [PhotoEntity])
   async photos(@Parent() user: UserEntity) {
-    return this.dataloaderService.load([PhotoEntity], { from: UserEntity, by: [user] });
+    return this.dataloaderService.load({ from: UserEntity, field: "photos", data: user });
   }
 }
 ```
 
 ---
 
-## **Query Example**
+## **Advanced Concepts**
 
-```graphql
-query UsersWithPhotos {
-  users {
-    id
-    name
-    photo {
-      id
-      url
-    }
-    photos {
-      id
-      url
-    }
-  }
-}
+### **Aliases**
+
+Aliases allow you to link a dataloader handler to an abstract class, which is especially useful when working with more complex architectures that include abstract or shared classes.
+
+> #### **Why Use Aliases?**
+> Sometimes you may want to map a dataloader handler to an abstract class that doesn't allow decorators. Aliases provide a way to assign a handler to such cases.
+
+#### **Using Aliases**
+
+```typescript
+@AliasFor(() => AbstractPhotoService)
+export class ConcretePhotoService {}
 ```
+
+This allows `PhotoService` to serve as the dataloader handler for `AbstractPhotoService`.
+
+#### **Under the Hood**
+
+`nestjs-decorated-dataloaders` is built on top of the GraphQL Dataloader library. At its core, a dataloader is a mechanism for batching and caching database or API requests, reducing the number of round trips required to fetch related data.
+
+- **Batching**: Dataloader batches multiple requests for the same resource into a single query. This ensures that, rather than issuing one query per entity (e.g., fetching one photo per user), the dataloader combines them into a single query that fetches all the photos for the users in one go.
+- **Caching**: Dataloader caches query results, preventing redundant queries for the same data within the same request cycle. This ensures that once a resource is fetched, subsequent requests for the same resource will use the cached data.
+
+#### **High-Level Nest.js Abstraction**
+
+`nestjs-decorated-dataloaders` abstracts the complexities of manually managing dataloaders and integrates seamlessly with Nest.js using decorators. It provides a declarative and maintainable approach to solving the N+1 problem, allowing you to focus on building features without worrying about the underlying dataloader logic.
+
+By using decorators like `@Load` and `@DataloaderHandler`, this module streamlines dataloader setup, making it simple to handle related entities in GraphQL resolvers without manual dataloader instantiation or dependency injection.
 
 ---
 
-## **Deprecated Decorators**
+## **Migration Guide**
 
-### **`@LoadOne`** and **`@LoadMany`**
+### **Migrating from ****************`@LoadOne`**************** and ****************`@LoadMany`**************** Decorators**
 
-The `@LoadOne` and `@LoadMany` decorators are deprecated and will be removed in future releases. Use `@Load` instead.
+Replace the old `@LoadOne` and `@LoadMany` decorators with the new `@Load` decorator. Ensure the options are correctly mapped to the new syntax.
 
-#### \*\*One-to-One Example with \*\***`@LoadOne`**
+#### **Old Code**
 
 ```typescript
 import { LoadOne } from "nestjs-decorated-dataloaders";
-import { UserEntity } from "./user.entity";
-import { PhotoEntity } from "./photo.entity";
 
 export class UserEntity {
   id: number;
-  name: string;
 
   @LoadOne(() => PhotoEntity, { by: "id", where: "userId", on: "photoLoader" })
   photo: PhotoEntity;
 }
 ```
 
-#### One-to-Many Example with **`@LoadMany`**
+#### **New Code**
 
 ```typescript
-import { LoadMany } from "nestjs-decorated-dataloaders";
-import { UserEntity } from "./user.entity";
-import { PhotoEntity } from "./photo.entity";
+import { Load } from "nestjs-decorated-dataloaders";
 
 export class UserEntity {
   id: number;
-  name: string;
 
-  @LoadMany(() => PhotoEntity, { by: "id", where: "userId", on: "photoLoader" })
-  photos: PhotoEntity[];
+  @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
+  photo: PhotoEntity;
 }
 ```
 
----
+### **Migrating DataloaderService Syntax**
 
-With `nestjs-decorated-dataloaders`, solving the N+1 problem becomes straightforward, declarative, and efficient, ensuring optimal performance for your GraphQL applications.
+Update the `dataloaderService.load` syntax to use the new parameters.
+
+#### **Old Code**
+
+```typescript
+this.dataloaderService.load(PhotoEntity, { from: UserEntity, by: [user] });
+```
+
+#### **New Code**
+
+```typescript
+this.dataloaderService.load({ from: UserEntity, field: "photo", data: user });
+```
+
+---
 

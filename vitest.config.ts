@@ -11,6 +11,8 @@ export default defineConfig({
 		coverage: {
 			reporter: ["html"],
 			provider: "v8",
+			exclude: ["**/node_modules/**", "**/dist/**", "**/testing/**"],
+			include: ["src/**/*.ts"],
 		},
 	},
 	plugins: [],

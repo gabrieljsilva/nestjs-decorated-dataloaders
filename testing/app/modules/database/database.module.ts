@@ -1,8 +1,13 @@
-import { Module } from "@nestjs/common";
+import { DynamicModule } from "@nestjs/common";
 import { DatabaseService } from "./database.service";
 
-@Module({
-	providers: [DatabaseService],
-	exports: [DatabaseService],
-})
-export class DatabaseModule {}
+export class DatabaseModule {
+	static forRoot(): DynamicModule {
+		return {
+			module: DatabaseModule,
+			providers: [DatabaseService],
+			exports: [DatabaseService],
+			global: true,
+		};
+	}
+}

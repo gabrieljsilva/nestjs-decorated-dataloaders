@@ -20,9 +20,11 @@ export class TestClientService {
 
 	async query<Output, Input = void>(options: QueryOptions<Output, Input>) {
 		const { query, variables } = options;
+
 		const response: GraphqlResponse<Output> = await request(this.testServer.app.getHttpServer())
 			.post("/graphql")
 			.send({ query: typeof query === "string" ? query : print(query), variables });
+
 		return response.body;
 	}
 }

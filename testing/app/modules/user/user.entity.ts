@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { LoadMany } from "../../../../src";
+import { Load } from "../../../../src";
 import { LOAD_GROUPS_BY_USERS, LOAD_PHOTOS_BY_USER } from "../../constants";
 import { GroupEntity } from "../group/group.entity";
 import { PhotoEntity } from "../photo/photo.entity";
@@ -19,18 +19,18 @@ export class UserEntity {
 	@FactoryField((faker) => faker.date.past())
 	createdAt: Date;
 
-	@LoadMany(() => PhotoEntity, {
-		by: "id",
-		where: "userId",
-		on: LOAD_PHOTOS_BY_USER,
+	@Load(() => [PhotoEntity], {
+		key: "id",
+		parentKey: "userId",
+		handler: LOAD_PHOTOS_BY_USER,
 	})
 	@FactoryRelationField(() => [PhotoEntity])
 	photos: Array<PhotoEntity>;
 
-	@LoadMany<GroupEntity, UserEntity>(() => GroupEntity, {
-		by: "id",
-		where: "userGroups.userId",
-		on: LOAD_GROUPS_BY_USERS,
+	@Load(() => [GroupEntity], {
+		key: "id",
+		parentKey: "userGroups.userId",
+		handler: LOAD_GROUPS_BY_USERS,
 	})
 	groups: Array<GroupEntity>;
 }

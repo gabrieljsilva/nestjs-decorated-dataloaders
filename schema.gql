@@ -1,0 +1,56 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CategoryEntity {
+  id: Int!
+  name: String!
+}
+
+type GroupEntity {
+  id: Int!
+  name: String!
+}
+
+type CommentEntity {
+  id: Int!
+  text: String!
+  post: PostEntity!
+  postId: Float!
+}
+
+type PostEntity {
+  id: Int!
+  title: String!
+  content: String!
+  createdAt: String!
+  comments: [CommentEntity!]!
+  categories: [CategoryEntity!]!
+}
+
+type PhotoEntity {
+  id: Int!
+  url: String!
+  userId: Float!
+  user: UserEntity!
+}
+
+type UserEntity {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  photos: [PhotoEntity!]!
+  groups: [GroupEntity!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  users: [UserEntity!]!
+  photos: [PhotoEntity!]!
+  posts: [PostEntity!]!
+  comments: [CommentEntity!]!
+}

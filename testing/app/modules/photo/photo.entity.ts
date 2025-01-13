@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { LoadOne } from "../../../../src";
+import { Load } from "../../../../src";
 import { LOAD_USER_BY_PHOTO } from "../../constants";
 import { UserEntity } from "../user/user.entity";
 
@@ -19,10 +19,10 @@ export class PhotoEntity {
 	userId: number;
 
 	@FactoryRelationField(() => UserEntity)
-	@LoadOne(() => UserEntity, {
-		by: "userId",
-		where: "id",
-		on: LOAD_USER_BY_PHOTO,
+	@Load(() => UserEntity, {
+		key: "userId",
+		parentKey: "id",
+		handler: LOAD_USER_BY_PHOTO,
 	})
 	user: UserEntity;
 }

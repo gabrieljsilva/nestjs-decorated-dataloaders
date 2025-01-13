@@ -14,8 +14,9 @@ export class GroupRepository {
 	@DataloaderHandler(LOAD_GROUPS_BY_USERS)
 	async findByUsersIds(usersIds: number[]) {
 		const groups = this.database.getGroups();
+
 		return groups.map((group) => {
-			group.userGroups = usersIds.map((userId) => {
+			group.userGroups = usersIds.flatMap((userId) => {
 				const userGroup = new UserGroupEntity();
 				userGroup.userId = userId;
 				userGroup.groupId = group.id;

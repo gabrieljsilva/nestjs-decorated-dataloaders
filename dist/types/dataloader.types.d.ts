@@ -1,19 +1,32 @@
 import { Type } from "@nestjs/common";
-import { Paths } from "./paths.type";
 export declare enum RelationType {
     OneToOne = "OneToOne",
     OneToMany = "OneToMany"
 }
 export type JoinProperty = string | number;
-export type DataloaderKey = string;
 export type AliasForReturnFn = <T = any>() => Type<T> | Function;
-export type RelationField = string;
-export type RelationNodeFn<Of = any> = () => Type<Of>;
-export declare class RelationMetadata<Child = any, Parent = any> {
-    type: RelationType;
-    by: Paths<Parent>;
-    where: Paths<Child>;
-    field?: string;
-    on: string;
-    constructor(metadata: RelationMetadata<Child, Parent>);
+export type ParentFN<T = unknown> = () => Type<T>;
+export type ChildFN<T = unknown> = () => Type<T> | [Type<T>];
+export interface DataloaderHandlerMetadata {
+    provide: Type;
+    field: string;
 }
+export interface CommonRelationshipOptions {
+    key: string;
+    parentKey: string;
+    handler: string;
+}
+export interface Relationship<Parent = any, Child = any> extends CommonRelationshipOptions {
+    parentFN: ParentFN<Parent>;
+    explicitChildFN: ChildFN<Child>;
+    originalFieldName: string;
+    type?: RelationType;
+}
+export interface LoadedRelationship extends CommonRelationshipOptions {
+    type: RelationType;
+    parent: Type;
+    child: Type;
+}
+export type FielName = string;
+export type LoadedRelationships = Map<Type, Map<FielName, LoadedRelationship>>;
+export type HandlerKey = string;

@@ -10,7 +10,6 @@ export class CommentResolver {
 	constructor(
 		@Inject(DataloaderService)
 		private readonly dataloaderService: DataloaderService,
-
 		@Inject(CommentService)
 		private readonly commentsService: CommentService,
 	) {}
@@ -22,6 +21,6 @@ export class CommentResolver {
 
 	@ResolveField(() => PostEntity)
 	async post(@Parent() comment: CommentEntity) {
-		return this.dataloaderService.load(PostEntity, { from: CommentEntity, by: [comment] });
+		return this.dataloaderService.load({ from: CommentEntity, field: "post", data: comment });
 	}
 }

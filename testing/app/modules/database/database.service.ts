@@ -1,12 +1,12 @@
 import { fakerPT_BR } from "@faker-js/faker";
 import { Injectable } from "@nestjs/common";
 import { Factory } from "decorated-factory";
-import { PostEntity } from "../post/post.entity";
-import { UserEntity } from "../user/user.entity";
-import { GroupEntity } from "../group/group.entity";
-import { UserGroupEntity } from "../user-group/user-group.entity";
-import { CategoryEntity } from "../category/category.entity";
 import { CategoryPostEntity } from "../category-post/category-post.entity";
+import { CategoryEntity } from "../category/category.entity";
+import { GroupEntity } from "../group/group.entity";
+import { PostEntity } from "../post/post.entity";
+import { UserGroupEntity } from "../user-group/user-group.entity";
+import { UserEntity } from "../user/user.entity";
 
 @Injectable()
 export class DatabaseService {

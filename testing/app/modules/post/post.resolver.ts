@@ -10,7 +10,7 @@ import { PostService } from "./post.service";
 export class PostResolver {
 	constructor(
 		@Inject(PostService)
-		private postService: PostService,
+		private readonly postService: PostService,
 		@Inject(DataloaderService)
 		private readonly dataloaderService: DataloaderService,
 	) {}
@@ -22,11 +22,11 @@ export class PostResolver {
 
 	@ResolveField(() => [CommentEntity])
 	async comments(@Parent() post: PostEntity) {
-		return this.dataloaderService.load([CommentEntity], { from: PostEntity, by: [post] });
+		return this.dataloaderService.load({ from: PostEntity, field: "comments", data: post });
 	}
 
 	@ResolveField(() => [CategoryEntity])
 	async categories(@Parent() post: PostEntity) {
-		return this.dataloaderService.load([CategoryEntity], { from: PostEntity, by: [post] });
+		return this.dataloaderService.load({ from: PostEntity, field: "categories", data: post });
 	}
 }

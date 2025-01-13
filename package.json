@@ -4,9 +4,7 @@
 	"version": "0.1.2-alpha.0",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -64,10 +62,11 @@
 		"@suites/unit": "^3.0.1"
 	},
 	"peerDependencies": {
-		"@nestjs/common": ">=9.0.0 <11.0.0",
-		"@nestjs/core": ">=9.0.0 <11.0.0",
-		"dataloader": "^2.0.0",
-		"reflect-metadata": "^0.2.0"
+		"@nestjs/common": ">=9.0.0",
+		"@nestjs/core": ">=9.0.0",
+		"@nestjs/graphql": ">=10.0.0",
+		"dataloader": ">=2.0.0",
+		"reflect-metadata": ">=0.2.0"
 	},
 	"dependencies": {}
 }

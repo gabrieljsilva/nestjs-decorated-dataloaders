@@ -4,9 +4,12 @@ import { PostRepository } from "./post.repository";
 
 @Injectable()
 export class PostService {
-    constructor(@Inject(PostRepository) private postRepository: PostRepository) {}
+	constructor(
+		@Inject(PostRepository)
+		private postRepository: PostRepository,
+	) {}
 
-    async getPosts(): Promise<PostEntity[]> {
-        return this.postRepository.find();
-    }
+	async getPosts(): Promise<PostEntity[]> {
+		return this.postRepository.find();
+	}
 }

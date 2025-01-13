@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { LOAD_POSTS_BY_COMMENTS } from "testing/app/constants";
-import { Load } from "../../../../src/decorators/load.decorator";
+import { Load } from "../../../../src";
+import { LOAD_POSTS_BY_COMMENTS } from "../../constants";
 import { PostEntity } from "../post/post.entity";
 
 @ObjectType()

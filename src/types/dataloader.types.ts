@@ -1,5 +1,4 @@
 import { Type } from "@nestjs/common";
-import { Paths } from "./paths.type";
 
 export enum RelationType {
 	OneToOne = "OneToOne",
@@ -7,31 +6,34 @@ export enum RelationType {
 }
 
 export type JoinProperty = string | number;
-export type DataloaderKey = string;
 export type AliasForReturnFn = <T = any>() => Type<T> | Function;
-export type RelationField = string;
-export type RelationNodeFn<Of = any> = () => Type<Of>;
+export type ParentFN<T = unknown> = () => Type<T>;
+export type ChildFN<T = unknown> = () => Type<T> | [Type<T>];
 
-/**
- * Stores metadata about a relation between two entities.
- * type: the type of relation (OneToOne, OneToMany)
- * by: the path to the parent entity used to join the child entity
- * where: the path to the child entity used to join the parent entity
- * field: the field name of the relation
- * on: the name of the DataloaderHandler used to load the data from some datasource
- */
-export class RelationMetadata<Child = any, Parent = any> {
-	type: RelationType;
-	by: Paths<Parent>;
-	where: Paths<Child>;
-	field?: string;
-	on: string;
-
-	constructor(metadata: RelationMetadata<Child, Parent>) {
-		this.type = metadata.type;
-		this.by = metadata.by;
-		this.where = metadata.where;
-		this.field = metadata.field;
-		this.on = metadata.on;
-	}
+export interface DataloaderHandlerMetadata {
+	provide: Type;
+	field: string;
 }
+
+export interface CommonRelationshipOptions {
+	key: string;
+	parentKey: string;
+	handler: string;
+}
+
+export interface Relationship<Parent = any, Child = any> extends CommonRelationshipOptions {
+	parentFN: ParentFN<Parent>;
+	explicitChildFN: ChildFN<Child>;
+	originalFieldName: string;
+	type?: RelationType;
+}
+
+export interface LoadedRelationship extends CommonRelationshipOptions {
+	type: RelationType;
+	parent: Type;
+	child: Type;
+}
+
+export type FielName = string;
+export type LoadedRelationships = Map<Type, Map<FielName, LoadedRelationship>>;
+export type HandlerKey = string;

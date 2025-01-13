@@ -6,7 +6,7 @@ import { PhotoEntity } from "../photo/photo.entity";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
 
-@Resolver(UserEntity)
+@Resolver(() => UserEntity)
 export class UserResolver {
 	constructor(
 		@Inject(UserService)
@@ -22,11 +22,11 @@ export class UserResolver {
 
 	@ResolveField(() => [PhotoEntity])
 	async photos(@Parent() user: UserEntity) {
-		return this.dataloaderService.load(PhotoEntity, { from: UserEntity, by: [user] });
+		return this.dataloaderService.load({ from: UserEntity, field: "photos", data: user });
 	}
 
 	@ResolveField(() => [GroupEntity])
 	async groups(@Parent() user: UserEntity) {
-		return this.dataloaderService.load(GroupEntity, { from: UserEntity, by: [user] });
+		return this.dataloaderService.load({ from: UserEntity, field: "groups", data: user });
 	}
 }
