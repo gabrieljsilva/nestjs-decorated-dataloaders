@@ -16,7 +16,7 @@ describe("Load Decorator", () => {
 		class User {
 			id: number;
 
-			@Load(() => Photo, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_IDS" })
+			@Load(() => Photo, { key: "id", parentKey: "userId", handler: "LOAD_PHOTO_BY_USER_ID" })
 			photo: Photo;
 		}
 
@@ -26,13 +26,14 @@ describe("Load Decorator", () => {
 		expect(userRelations).toBeDefined();
 
 		const photoMetadata = userRelations?.get("photo");
-		expect(photoMetadata).toMatchObject({
+		expect(photoMetadata).toEqual({
 			key: "id",
 			parentKey: "userId",
-			handler: "LOAD_PHOTOS_BY_USER_IDS",
+			handler: "LOAD_PHOTO_BY_USER_ID",
 			type: RelationType.OneToOne,
 			parent: User,
 			child: Photo,
+			isArray: false,
 		});
 	});
 
@@ -45,7 +46,7 @@ describe("Load Decorator", () => {
 		class User {
 			id: number;
 
-			@Load(() => [Photo], { key: "id", parentKey: "userId", handler: "photoLoader" })
+			@Load(() => [Photo], { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
 			photos: Photo[];
 		}
 
@@ -55,13 +56,14 @@ describe("Load Decorator", () => {
 		expect(userRelations).toBeDefined();
 
 		const photosMetadata = userRelations?.get("photos");
-		expect(photosMetadata).toMatchObject({
+		expect(photosMetadata).toEqual({
 			key: "id",
 			parentKey: "userId",
-			handler: "photoLoader",
+			handler: "LOAD_PHOTOS_BY_USER_ID",
 			type: RelationType.OneToMany,
 			parent: User,
 			child: Photo,
+			isArray: true,
 		});
 	});
 
@@ -79,10 +81,10 @@ describe("Load Decorator", () => {
 		class User {
 			id: number;
 
-			@Load(() => Photo, { key: "id", parentKey: "userId", handler: "photoLoader" })
+			@Load(() => Photo, { key: "id", parentKey: "userId", handler: "LOAD_PHOTO_BY_USER_ID" })
 			photo: Photo;
 
-			@Load(() => [Album], { key: "id", parentKey: "userId", handler: "albumLoader" })
+			@Load(() => [Album], { key: "id", parentKey: "userId", handler: "LOAD_ALBUMS_BY_USER_ID" })
 			albums: Album[];
 		}
 
@@ -92,45 +94,47 @@ describe("Load Decorator", () => {
 		expect(userRelations).toBeDefined();
 
 		const photoMetadata = userRelations?.get("photo");
-		expect(photoMetadata).toMatchObject({
+		expect(photoMetadata).toEqual({
 			key: "id",
 			parentKey: "userId",
-			handler: "photoLoader",
+			handler: "LOAD_PHOTO_BY_USER_ID",
 			type: RelationType.OneToOne,
 			parent: User,
 			child: Photo,
+			isArray: false,
 		});
 
 		const albumMetadata = userRelations?.get("albums");
-		expect(albumMetadata).toMatchObject({
+		expect(albumMetadata).toEqual({
 			key: "id",
 			parentKey: "userId",
-			handler: "albumLoader",
+			handler: "LOAD_ALBUMS_BY_USER_ID",
 			type: RelationType.OneToMany,
 			parent: User,
 			child: Album,
+			isArray: true,
 		});
 	});
 
 	it("should handle nested relationships correctly", () => {
-		class GrandPhoto {
+		class Comment {
 			id: number;
-			photoId: number;
+			postId: number;
 		}
 
-		class Photo {
+		class Post {
 			id: number;
 			userId: number;
 
-			@Load(() => [GrandPhoto], { key: "id", parentKey: "photoId", handler: "grandPhotoLoader" })
-			grandPhotos: GrandPhoto[];
+			@Load(() => [Comment], { key: "id", parentKey: "postId", handler: "LOAD_COMMENTS_BY_POST_ID" })
+			comments: Comment[];
 		}
 
 		class User {
 			id: number;
 
-			@Load(() => [Photo], { key: "id", parentKey: "userId", handler: "photoLoader" })
-			photos: Photo[];
+			@Load(() => [Post], { key: "id", parentKey: "userId", handler: "LOAD_POSTS_BY_USER_ID" })
+			posts: Post[];
 		}
 
 		LazyMetadataContainer.loadRelationshipMetadata();
@@ -138,27 +142,29 @@ describe("Load Decorator", () => {
 		const userRelations = LazyMetadataContainer.loadedRelationships.get(User);
 		expect(userRelations).toBeDefined();
 
-		const photoMetadata = userRelations?.get("photos");
-		expect(photoMetadata).toMatchObject({
+		const postMetadata = userRelations?.get("posts");
+		expect(postMetadata).toEqual({
 			key: "id",
 			parentKey: "userId",
-			handler: "photoLoader",
+			handler: "LOAD_POSTS_BY_USER_ID",
 			type: RelationType.OneToMany,
 			parent: User,
-			child: Photo,
+			child: Post,
+			isArray: true,
 		});
 
-		const photoRelations = LazyMetadataContainer.loadedRelationships.get(Photo);
-		expect(photoRelations).toBeDefined();
+		const postRelations = LazyMetadataContainer.loadedRelationships.get(Post);
+		expect(postRelations).toBeDefined();
 
-		const grandPhotoMetadata = photoRelations?.get("grandPhotos");
-		expect(grandPhotoMetadata).toMatchObject({
+		const commentMetadata = postRelations?.get("comments");
+		expect(commentMetadata).toEqual({
 			key: "id",
-			parentKey: "photoId",
-			handler: "grandPhotoLoader",
+			parentKey: "postId",
+			handler: "LOAD_COMMENTS_BY_POST_ID",
 			type: RelationType.OneToMany,
-			parent: Photo,
-			child: GrandPhoto,
+			parent: Post,
+			child: Comment,
+			isArray: true,
 		});
 	});
 
@@ -176,7 +182,7 @@ describe("Load Decorator", () => {
 		class User {
 			id: number;
 
-			@Load(() => Post, { key: "id", parentKey: "userId", handler: "postLoader" })
+			@Load(() => Post, { key: "id", parentKey: "userId", handler: "LOAD_POSTS_BY_USER_ID" })
 			posts: Post[];
 		}
 
@@ -194,10 +200,10 @@ describe("Load Decorator", () => {
 			id: number;
 			managerId: number;
 
-			@Load(() => Employee, { key: "id", parentKey: "managerId", handler: "managerLoader" })
+			@Load(() => Employee, { key: "id", parentKey: "managerId", handler: "LOAD_MANAGER_BY_EMPLOYEE_ID" })
 			manager: Employee;
 
-			@Load(() => [Employee], { key: "id", parentKey: "managerId", handler: "employeesLoader" })
+			@Load(() => [Employee], { key: "id", parentKey: "managerId", handler: "LOAD_EMPLOYEES_BY_MANAGER_ID" })
 			employees: Employee[];
 		}
 
@@ -207,23 +213,25 @@ describe("Load Decorator", () => {
 		expect(employeeRelations).toBeDefined();
 
 		const managerMetadata = employeeRelations?.get("manager");
-		expect(managerMetadata).toMatchObject({
+		expect(managerMetadata).toEqual({
 			key: "id",
 			parentKey: "managerId",
-			handler: "managerLoader",
+			handler: "LOAD_MANAGER_BY_EMPLOYEE_ID",
 			type: RelationType.OneToOne,
 			parent: Employee,
 			child: Employee,
+			isArray: false,
 		});
 
 		const employeesMetadata = employeeRelations?.get("employees");
-		expect(employeesMetadata).toMatchObject({
+		expect(employeesMetadata).toEqual({
 			key: "id",
 			parentKey: "managerId",
-			handler: "employeesLoader",
+			handler: "LOAD_EMPLOYEES_BY_MANAGER_ID",
 			type: RelationType.OneToMany,
 			parent: Employee,
 			child: Employee,
+			isArray: true,
 		});
 	});
 
@@ -242,10 +250,10 @@ describe("Load Decorator", () => {
 			id: number;
 			userId: number;
 
-			@Load(() => [Comment], { key: "id", parentKey: "postId", handler: "commentLoader" })
+			@Load(() => [Comment], { key: "id", parentKey: "postId", handler: "LOAD_COMMENTS_BY_POST_ID" })
 			comments: Comment[];
 
-			@Load(() => [Tag], { key: "id", parentKey: "postId", handler: "tagLoader" })
+			@Load(() => [Tag], { key: "id", parentKey: "postId", handler: "LOAD_TAGS_BY_POST_ID" })
 			tags: Tag[];
 		}
 
@@ -257,10 +265,10 @@ describe("Load Decorator", () => {
 		class User {
 			id: number;
 
-			@Load(() => Profile, { key: "id", parentKey: "userId", handler: "profileLoader" })
+			@Load(() => Profile, { key: "id", parentKey: "userId", handler: "LOAD_PROFILE_BY_USER_ID" })
 			profile: Profile;
 
-			@Load(() => [Post], { key: "id", parentKey: "userId", handler: "postLoader" })
+			@Load(() => [Post], { key: "id", parentKey: "userId", handler: "LOAD_POSTS_BY_USER_ID" })
 			posts: Post[];
 		}
 
@@ -268,32 +276,48 @@ describe("Load Decorator", () => {
 
 		const userRelations = LazyMetadataContainer.loadedRelationships.get(User);
 		const profileMetadata = userRelations?.get("profile");
-		expect(profileMetadata).toMatchObject({
-			type: RelationType.OneToOne,
+		expect(profileMetadata).toEqual({
 			parent: User,
 			child: Profile,
+			type: RelationType.OneToOne,
+			handler: "LOAD_PROFILE_BY_USER_ID",
+			isArray: false,
+			key: "id",
+			parentKey: "userId",
 		});
 
 		const postsMetadata = userRelations?.get("posts");
-		expect(postsMetadata).toMatchObject({
-			type: RelationType.OneToMany,
+		expect(postsMetadata).toEqual({
 			parent: User,
 			child: Post,
+			handler: "LOAD_POSTS_BY_USER_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "userId",
+			type: RelationType.OneToMany,
 		});
 
 		const postRelations = LazyMetadataContainer.loadedRelationships.get(Post);
 		const commentsMetadata = postRelations?.get("comments");
-		expect(commentsMetadata).toMatchObject({
+		expect(commentsMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Post,
 			child: Comment,
+			handler: "LOAD_COMMENTS_BY_POST_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "postId",
 		});
 
 		const tagsMetadata = postRelations?.get("tags");
-		expect(tagsMetadata).toMatchObject({
+		expect(tagsMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Post,
 			child: Tag,
+			handler: "LOAD_TAGS_BY_POST_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "postId",
 		});
 	});
 
@@ -314,10 +338,10 @@ describe("Load Decorator", () => {
 		class Creator {
 			id: number;
 
-			@Load(() => [Article], { key: "id", parentKey: "creatorId", handler: "articleLoader" })
+			@Load(() => [Article], { key: "id", parentKey: "creatorId", handler: "LOAD_ARTICLES_BY_CREATOR_ID" })
 			articles: Article[];
 
-			@Load(() => [Video], { key: "id", parentKey: "creatorId", handler: "videoLoader" })
+			@Load(() => [Video], { key: "id", parentKey: "creatorId", handler: "LOAD_VIDEOS_BY_CREATOR_ID" })
 			videos: Video[];
 		}
 
@@ -327,17 +351,25 @@ describe("Load Decorator", () => {
 		expect(creatorRelations).toBeDefined();
 
 		const articlesMetadata = creatorRelations?.get("articles");
-		expect(articlesMetadata).toMatchObject({
+		expect(articlesMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Creator,
 			child: Article,
+			handler: "LOAD_ARTICLES_BY_CREATOR_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "creatorId",
 		});
 
 		const videosMetadata = creatorRelations?.get("videos");
-		expect(videosMetadata).toMatchObject({
+		expect(videosMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Creator,
 			child: Video,
+			handler: "LOAD_VIDEOS_BY_CREATOR_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "creatorId",
 		});
 	});
 
@@ -355,7 +387,7 @@ describe("Load Decorator", () => {
 			@Load(() => [TeamMember], {
 				key: "id",
 				parentKey: "teamId",
-				handler: "teamMemberLoader",
+				handler: "LOAD_TEAM_MEMBERS_BY_TEAM_ID",
 			})
 			members: TeamMember[];
 		}
@@ -366,7 +398,7 @@ describe("Load Decorator", () => {
 			@Load(() => [Team], {
 				key: "id",
 				parentKey: "organizationId",
-				handler: "teamLoader",
+				handler: "LOAD_TEAMS_BY_ORGANIZATION_ID",
 			})
 			teams: Team[];
 		}
@@ -374,19 +406,27 @@ describe("Load Decorator", () => {
 		LazyMetadataContainer.loadRelationshipMetadata();
 
 		const orgRelations = LazyMetadataContainer.loadedRelationships.get(Organization);
-		const teamsMetadata = orgRelations?.get("teams");
-		expect(teamsMetadata).toMatchObject({
+		const teamsMetadata = orgRelations.get("teams");
+		expect(teamsMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Organization,
 			child: Team,
+			handler: "LOAD_TEAMS_BY_ORGANIZATION_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "organizationId",
 		});
 
 		const teamRelations = LazyMetadataContainer.loadedRelationships.get(Team);
 		const membersMetadata = teamRelations?.get("members");
-		expect(membersMetadata).toMatchObject({
+		expect(membersMetadata).toEqual({
 			type: RelationType.OneToMany,
 			parent: Team,
 			child: TeamMember,
+			handler: "LOAD_TEAM_MEMBERS_BY_TEAM_ID",
+			isArray: true,
+			key: "id",
+			parentKey: "teamId",
 		});
 	});
 });
