@@ -2,11 +2,7 @@ import { fakerPT_BR } from "@faker-js/faker";
 import { Injectable } from "@nestjs/common";
 import { Factory } from "decorated-factory";
 import { CategoryPostEntity } from "../category-post/category-post.entity";
-import { CategoryEntity } from "../category/category.entity";
-import { GroupEntity } from "../group/group.entity";
-import { PostEntity } from "../post/post.entity";
 import { UserGroupEntity } from "../user-group/user-group.entity";
-import { UserEntity } from "../user/user.entity";
 
 @Injectable()
 export class DatabaseService {
@@ -14,71 +10,39 @@ export class DatabaseService {
 	private generateData() {
 		const factory = new Factory(fakerPT_BR);
 
-		const posts = factory
-			.createList(PostEntity, 3, {
+		/* CATEGORY, POST AND COMMENTS */
+		const categoryPosts = factory.newList(CategoryPostEntity, 3, {
+			category: true,
+			post: {
 				comments: [3],
-			})
-			.override((posts) => {
-				for (const post of posts) {
-					for (const comment of post.comments) {
-						comment.postId = post.id;
-					}
-				}
-
-				return posts;
-			});
-
-		const comments = posts.flatMap((post) => post.comments);
-
-		for (const post of posts) {
-			post.comments = undefined;
-		}
-
-		const users = factory
-			.createList(UserEntity, 5, {
-				photos: [2],
-			})
-			.override((users) => {
-				for (const user of users) {
-					for (const photo of user.photos) {
-						photo.userId = user.id;
-					}
-				}
-				return users;
-			});
-
-		const photos = users.flatMap((user) => user.photos);
-
-		for (const user of users) {
-			user.photos = undefined;
-		}
-
-		const groups = factory.newList(GroupEntity, 5);
-
-		const userGroups = users.flatMap((user) => {
-			return groups.map((group) => {
-				const userGroup = new UserGroupEntity();
-				userGroup.userId = user.id;
-				userGroup.groupId = group.id;
-				return userGroup;
-			});
+			},
 		});
 
-		for (const group of groups) {
-			group.userGroups = userGroups.filter((userGroup) => userGroup.groupId === group.id);
+		const categories = categoryPosts.flatMap((categoryPost) => categoryPost.category);
+		const comments = categoryPosts.flatMap((categoryPost) => categoryPost.post.comments);
+		const posts = categoryPosts.flatMap((categoryPost) => categoryPost.post);
+		for (const categoryPost of categoryPosts) {
+			delete categoryPost.category;
+			delete categoryPost.post.comments;
+			delete categoryPost.post;
 		}
 
-		const categories = factory.newList(CategoryEntity, 5);
+		/* USER, PHOTOS AND GROUPS */
+		const userGroups = factory.newList(UserGroupEntity, 5, {
+			group: true,
+			user: {
+				photos: [2],
+			},
+		});
 
-		const categoryPosts: Array<CategoryPostEntity> = [];
+		const groups = userGroups.flatMap((userGroup) => userGroup.group);
+		const users = userGroups.flatMap((userGroup) => userGroup.user);
+		const photos = users.flatMap((user) => user.photos);
 
-		for (const post of posts) {
-			for (const category of categories) {
-				const categoryPost = factory.new(CategoryPostEntity);
-				categoryPost.categoryId = category.id;
-				categoryPost.postId = post.id;
-				categoryPosts.push(categoryPost);
-			}
+		for (const userGroup of userGroups) {
+			delete userGroup.group;
+			delete userGroup.user.photos;
+			delete userGroup.user;
 		}
 
 		return {

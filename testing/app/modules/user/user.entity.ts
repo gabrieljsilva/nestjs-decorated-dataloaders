@@ -19,18 +19,10 @@ export class UserEntity {
 	@FactoryField((faker) => faker.date.past())
 	createdAt: Date;
 
-	@Load(() => [PhotoEntity], {
-		key: "id",
-		parentKey: "userId",
-		handler: LOAD_PHOTOS_BY_USER,
-	})
-	@FactoryRelationField(() => [PhotoEntity])
+	@Load(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: LOAD_PHOTOS_BY_USER })
+	@FactoryRelationField(() => [PhotoEntity], { key: "id", inverseKey: "userId" })
 	photos: Array<PhotoEntity>;
 
-	@Load(() => [GroupEntity], {
-		key: "id",
-		parentKey: "userGroups.userId",
-		handler: LOAD_GROUPS_BY_USERS,
-	})
+	@Load(() => [GroupEntity], { key: "id", parentKey: "userGroups.userId", handler: LOAD_GROUPS_BY_USERS })
 	groups: Array<GroupEntity>;
 }

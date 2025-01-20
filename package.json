@@ -46,11 +46,12 @@
 		"@parcel/watcher": "^2.4.1",
 		"@suites/di.nestjs": "^3.0.1",
 		"@suites/doubles.vitest": "^3.0.1",
+		"@suites/unit": "^3.0.1",
 		"@types/node": "^20.14.11",
 		"@types/supertest": "^6.0.2",
 		"@vitest/coverage-v8": "^2.1.8",
 		"dataloader": "^2.2.2",
-		"decorated-factory": "^1.0.2",
+		"decorated-factory": "^1.1.1",
 		"graphql": "^16.9.0",
 		"graphql-tag": "^2.12.6",
 		"lru_map": "^0.4.1",
@@ -60,8 +61,7 @@
 		"supertest": "^7.0.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.5.4",
-		"vitest": "^2.1.8",
-		"@suites/unit": "^3.0.1"
+		"vitest": "^2.1.8"
 	},
 	"peerDependencies": {
 		"@nestjs/common": ">=9.0.0",

@@ -19,10 +19,6 @@ export class PhotoEntity {
 	userId: number;
 
 	@FactoryRelationField(() => UserEntity)
-	@Load(() => UserEntity, {
-		key: "userId",
-		parentKey: "id",
-		handler: LOAD_USER_BY_PHOTO,
-	})
+	@Load(() => UserEntity, { key: "userId", parentKey: "id", handler: LOAD_USER_BY_PHOTO })
 	user: UserEntity;
 }

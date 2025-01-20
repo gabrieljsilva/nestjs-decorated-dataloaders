@@ -7,11 +7,6 @@ type CategoryEntity {
   name: String!
 }
 
-type GroupEntity {
-  id: Int!
-  name: String!
-}
-
 type CommentEntity {
   id: Int!
   text: String!
@@ -26,6 +21,11 @@ type PostEntity {
   createdAt: String!
   comments: [CommentEntity!]!
   categories: [CategoryEntity!]!
+}
+
+type GroupEntity {
+  id: Int!
+  name: String!
 }
 
 type PhotoEntity {

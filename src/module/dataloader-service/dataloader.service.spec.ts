@@ -12,7 +12,7 @@ describe("DataloaderService", () => {
 	let moduleRef: any;
 	let explorerService: ExplorerService;
 	let dataloaderService: DataloaderService;
-	let cacheMapService: CacheMapService;
+	// let cacheMapService: CacheMapService;
 
 	beforeEach(async () => {
 		moduleRef = await Test.createTestingModule({
@@ -31,7 +31,7 @@ describe("DataloaderService", () => {
 		LazyMetadataContainer.clear();
 		explorerService = moduleRef.get(ExplorerService);
 		dataloaderService = await moduleRef.resolve(DataloaderService);
-		cacheMapService = moduleRef.get(CacheMapService);
+		// cacheMapService = moduleRef.get(CacheMapService);
 	});
 
 	it("should load one-to-many relationships", async () => {

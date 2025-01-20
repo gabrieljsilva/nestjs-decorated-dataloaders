@@ -2825,10 +2825,10 @@ decamelize@^1.2.0:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==
 
-decorated-factory@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/decorated-factory/-/decorated-factory-1.0.2.tgz#63ea99d3c5f2ccf80ed24171b4fb66ed74a0f7b4"
-  integrity sha512-nqlcT/ejUHjDM8TMuoWvSVHmZRZMiTB4p3eNheuuSbnKKckBv0KIbV+kPC306G5kW2XatZdEBCbtzwoz8VvOow==
+decorated-factory@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/decorated-factory/-/decorated-factory-1.1.1.tgz#65e1479241227eef78ddcb66409aeacaaa86e400"
+  integrity sha512-Dq82VXVyTsBzBAVa7qSWVmI6WWw4Bktfj3gOzGMPXKSYjJJdJdwG0Fr86HQsiobQVXuT+efqB32Rv8LQhs4dng==
 
 deep-eql@^5.0.1:
   version "5.0.2"

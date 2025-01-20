@@ -24,7 +24,7 @@ export class PostEntity {
 	createdAt: string;
 
 	@Load(() => [CommentEntity], { key: "id", parentKey: "postId", handler: LOAD_COMMENTS_BY_POSTS })
-	@FactoryRelationField(() => [CommentEntity])
+	@FactoryRelationField(() => [CommentEntity], { key: "id", inverseKey: "postId" })
 	comments: CommentEntity[];
 
 	@Load(() => [CategoryEntity], { key: "id", parentKey: "categoryPosts.postId", handler: LOAD_CATEGORY_BY_POSTS })
