@@ -4,9 +4,26 @@
 	"version": "1.0.0",
 	"main": "dist/index.js",
 	"license": "MIT",
-	"files": [
-		"dist"
+	"keywords": [
+		"nestjs",
+		"graphql",
+		"dataloaders",
+		"nestjs-module",
+		"graphql-dataloader",
+		"nestjs-decorators",
+		"n+1-problem",
+		"dataloader-decorator",
+		"nestjs-graphql",
+		"performance",
+		"batching",
+		"caching",
+		"lru-cache",
+		"nestjs-performance",
+		"resolvers",
+		"nest-abstraction",
+		"decorated-dataloader"
 	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
