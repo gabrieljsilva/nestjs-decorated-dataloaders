@@ -429,4 +429,55 @@ describe("Load Decorator", () => {
 			parentKey: "teamId",
 		});
 	});
+
+	it("should automatically infer inverse relationships when provided", () => {
+		class Post {
+			id: number;
+			userId: number;
+		}
+
+		class User {
+			id: number;
+
+			@Load(() => Post, {
+				key: "id",
+				parentKey: "userId",
+				handler: "LOAD_POSTS_BY_USER_ID",
+				inverseField: "user",
+				inverseHandler: "LOAD_USER_BY_POST_ID",
+				inverseRelationType: RelationType.OneToOne,
+			})
+			post: Post;
+		}
+
+		LazyMetadataContainer.loadRelationshipMetadata();
+
+		const userRelations = LazyMetadataContainer.loadedRelationships.get(User);
+		expect(userRelations).toBeDefined();
+
+		const postMetadata = userRelations?.get("post");
+		expect(postMetadata).toEqual({
+			key: "id",
+			parentKey: "userId",
+			handler: "LOAD_POSTS_BY_USER_ID",
+			type: RelationType.OneToOne,
+			parent: User,
+			child: Post,
+			isArray: false,
+		});
+
+		const postRelations = LazyMetadataContainer.loadedRelationships.get(Post);
+		expect(postRelations).toBeDefined();
+
+		const userMetadata = postRelations?.get("user");
+		expect(userMetadata).toEqual({
+			key: "userId",
+			parentKey: "id",
+			handler: "LOAD_USER_BY_POST_ID",
+			type: RelationType.OneToOne,
+			parent: Post,
+			child: User,
+			isArray: false,
+		});
+	});
 });

@@ -57,6 +57,26 @@ export class LazyMetadataContainer {
 			}
 
 			LazyMetadataContainer.loadedRelationships.get(parent)?.set(unloadedRelationship.originalFieldName, metadata);
+
+			if (unloadedRelationship.inverseField && unloadedRelationship.inverseHandler && unloadedRelationship.inverseRelationType) {
+				const inverseMetadata = {
+					parent: metadata.child,
+					child: metadata.parent,
+					isArray: unloadedRelationship.inverseRelationType === RelationType.OneToMany,
+					key: metadata.parentKey,
+					parentKey: metadata.key,
+					handler: unloadedRelationship.inverseHandler,
+					type: unloadedRelationship.inverseRelationType,
+				};
+
+				const isInverseRelationAdded = LazyMetadataContainer.loadedRelationships.has(inverseMetadata.parent);
+
+				if (!isInverseRelationAdded) {
+					LazyMetadataContainer.loadedRelationships.set(inverseMetadata.parent, new Map());
+				}
+
+				LazyMetadataContainer.loadedRelationships.get(inverseMetadata.parent)?.set(unloadedRelationship.inverseField, inverseMetadata);
+			}
 		}
 	}
 
