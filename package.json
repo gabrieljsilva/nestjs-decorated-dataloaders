@@ -23,9 +23,7 @@
 		"nest-abstraction",
 		"decorated-dataloader"
 	],
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -47,7 +45,8 @@
 		"prelocal-pack": "rimraf decorated-dataloaders-*.tgz",
 		"local-pack": "npm pack",
 		"codegen": "graphql-codegen --config codegen.ts",
-		"codegen:watch": "graphql-codegen --config codegen.ts --watch"
+		"codegen:watch": "graphql-codegen --config codegen.ts --watch",
+		"bench": "yarn test bench"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.11.4",
