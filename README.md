@@ -136,6 +136,41 @@ export class UserResolver {
 
 ## **Advanced Concepts**
 
+### **Handling Circular Dependencies**
+Circular dependencies between entities (e.g., User ↔ Photo) can cause metadata resolution errors when using reflect-metadata. For example:
+
+reflect-metadata tries to read metadata from User, which references Photo.
+
+Photo in turn references User, but if User hasn't been fully initialized, its metadata resolves to undefined.
+
+This issue is common in environments using SWC. To resolve it, use the Relation<T> wrapper provided by nestjs-decorated-dataloaders.
+
+Solution: Wrapping Circular References
+Encapsulate circular properties with Relation<T>. This prevents reflect-metadata from attempting to resolve the circular dependency during type introspection.
+
+Example:
+
+```typescript
+
+import { Relation } from 'nestjs-decorated-dataloaders';
+
+class User {
+  photo: Relation<Photo>;
+}
+
+class Photo {
+  user: Relation<User>;
+}
+```
+How It Works
+Generic Type Erasure: reflect-metadata cannot infer generic types like Relation<Photo>, so it defaults the metadata to undefined, avoiding circular resolution errors.
+
+Explicit Type Declaration: You must manually specify the wrapped type (e.g., Relation<Photo>) to retain type safety in your code.
+
+> **Important Notes**
+Use Relation<T> only for circular dependencies. For non-circular references, use direct types (e.g., Photo instead of Relation<Photo>).
+Ensure the generic type (e.g., Photo inside Relation<Photo>) is explicitly declared to avoid type inference issues.
+
 ### **Aliases**
 
 Aliases allow you to link a dataloader handler to an abstract class, which is especially useful when working with more complex architectures that include abstract or shared classes.
