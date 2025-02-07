@@ -23,9 +23,7 @@
 		"nest-abstraction",
 		"decorated-dataloader"
 	],
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "dist/index.d.ts",
 	"author": {
 		"email": "contato@gabrieljs.dev",
@@ -36,6 +34,7 @@
 		"type": "git",
 		"url": "https://github.com/gabrieljsilva/nestjs-decorated-dataloaders.git"
 	},
+	"homepage": "https://decorated-dataloaders.gabrieljs.dev/\n",
 	"scripts": {
 		"test": "vitest --run",
 		"test:e2e": "vitest --config testing/vitest.e2e.config.ts --run",
