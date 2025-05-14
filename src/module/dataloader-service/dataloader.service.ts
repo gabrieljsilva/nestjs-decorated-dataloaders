@@ -1,30 +1,12 @@
 import { Inject, Injectable, Scope, Type } from "@nestjs/common";
 import IDataloader from "dataloader";
-import { JoinProperty, LoadedRelationship } from "../../types/dataloader.types";
+import { JoinProperty, LoadParams, LoadedRelationship, PropertyType } from "../../types/dataloader.types";
 import { DataloaderMapper, LazyMetadataContainer, resolvePath } from "../../utils";
 import { CacheMapService } from "../cache-map";
 import { ExplorerService } from "../explorer-service";
 
 // Since Vitest runs tests in a different environment, it's necessary to use require() instead import statement
 const Dataloader = require("dataloader");
-
-// Type helper to get the type of class property
-type PropertyType<T, K extends keyof T> = T[K];
-
-interface CommonLoadParams<Parent> {
-	from: Type<Parent>;
-	args?: any[];
-}
-
-interface LoadParams<Parent, Field extends keyof Parent> extends CommonLoadParams<Parent> {
-	field: Field;
-	data: Parent;
-}
-
-interface LoadManyParams<Parent, Field extends keyof Parent> extends CommonLoadParams<Parent> {
-	field: Field;
-	data: Parent[];
-}
 
 /**
  * This service allows you to load data from a provider using a dataloader.

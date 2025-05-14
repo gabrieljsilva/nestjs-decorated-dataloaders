@@ -1,4 +1,5 @@
 import { Type } from "@nestjs/common";
+import { Paths } from "./paths.type";
 
 export enum RelationType {
 	OneToOne = "OneToOne",
@@ -15,25 +16,42 @@ export interface DataloaderHandlerMetadata {
 	field: string;
 }
 
-export interface CommonRelationshipOptions {
-	key: string;
-	parentKey: string;
+export interface CommonRelationshipOptions<Parent = any, Child = any> {
+	key: Paths<Parent>;
+	parentKey: Paths<Child>;
 	handler: string;
 }
 
-export interface Relationship<Parent = any, Child = any> extends CommonRelationshipOptions {
+export interface Relationship<Parent = any, Child = any> extends CommonRelationshipOptions<Parent, Child> {
 	parentFN: ParentFN<Parent>;
 	explicitChildFN: ChildFN<Child>;
 	originalFieldName: string;
 	type?: RelationType;
 }
 
-export interface LoadedRelationship extends CommonRelationshipOptions {
+export interface LoadedRelationship<Parent = any, Child = any> extends CommonRelationshipOptions<Parent, Child> {
 	type: RelationType;
 	parent: Type;
 	child: Type;
 }
 
-export type FielName = string;
-export type LoadedRelationships = Map<Type, Map<FielName, LoadedRelationship>>;
+export type FieldName = string;
+export type LoadedRelationships = Map<Type, Map<FieldName, LoadedRelationship<any, any>>>;
 export type HandlerKey = string;
+export interface LoadOptions<Child, Parent> {
+	key: Paths<Parent>;
+	parentKey: Paths<Child>;
+	handler: string;
+}
+
+export type PropertyType<T, K extends keyof T> = T[K];
+
+export interface CommonLoadParams<Parent> {
+	from: Type<Parent>;
+	args?: any[];
+}
+
+export interface LoadParams<Parent, Field extends keyof Parent> extends CommonLoadParams<Parent> {
+	field: Field;
+	data: Parent;
+}

@@ -169,11 +169,6 @@ describe("Load Decorator", () => {
 	});
 
 	it("should not add metadata for unrelated entities", () => {
-		class Comment {
-			id: number;
-			postId: number;
-		}
-
 		class Post {
 			id: number;
 			userId: number;
@@ -331,9 +326,7 @@ describe("Load Decorator", () => {
 			title: string;
 		}
 
-		class Video extends BaseContent {
-			duration: number;
-		}
+		class Video extends BaseContent {}
 
 		class Creator {
 			id: number;
@@ -377,7 +370,6 @@ describe("Load Decorator", () => {
 		class TeamMember {
 			teamId: number;
 			userId: number;
-			role: string;
 		}
 
 		class Team {

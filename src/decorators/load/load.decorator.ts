@@ -1,23 +1,16 @@
 import type { Type } from "@nestjs/common";
-import { ChildFN } from "../../types/dataloader.types";
-import { Paths } from "../../types/paths.type";
+import { ChildFN, LoadOptions } from "../../types/dataloader.types";
 import { LazyMetadataContainer } from "../../utils";
-
-interface LoadOptions<Child, Parent> {
-	key: Paths<Parent>;
-	parentKey: Paths<Child>;
-	handler: string;
-}
 
 export function Load<Child, Parent = any>(child: ChildFN<Child>, options: LoadOptions<Child, Parent>) {
 	const { key, parentKey, handler } = options;
 	return (target: NonNullable<any>, propertyKey: string) => {
 		const parent = () => target.constructor as Type;
 
-		LazyMetadataContainer.addRelationshipMetadata({
-			key: key as string,
-			parentKey: parentKey as string,
-			handler: handler,
+		LazyMetadataContainer.addRelationshipMetadata<Parent, Child>({
+			key: key,
+			parentKey: parentKey,
+			handler,
 			parentFN: parent,
 			explicitChildFN: child,
 			originalFieldName: propertyKey,

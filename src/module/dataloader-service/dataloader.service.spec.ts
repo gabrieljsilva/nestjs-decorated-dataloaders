@@ -12,7 +12,6 @@ describe("DataloaderService", () => {
 	let moduleRef: any;
 	let explorerService: ExplorerService;
 	let dataloaderService: DataloaderService;
-	// let cacheMapService: CacheMapService;
 
 	beforeEach(async () => {
 		moduleRef = await Test.createTestingModule({
@@ -31,7 +30,6 @@ describe("DataloaderService", () => {
 		LazyMetadataContainer.clear();
 		explorerService = moduleRef.get(ExplorerService);
 		dataloaderService = await moduleRef.resolve(DataloaderService);
-		// cacheMapService = moduleRef.get(CacheMapService);
 	});
 
 	it("should load one-to-many relationships", async () => {
@@ -526,10 +524,8 @@ describe("DataloaderService", () => {
 			state: "California",
 		}));
 
-		// Initial load for both schools to populate cache
 		const loadBySchoolIdsSpy = vi.spyOn(StudentRepository, "loadBySchoolIds");
 
-		// Load students for both schools
 		const [berkeleyStudents, oaklandStudents] = await Promise.all([
 			dataloaderService.load({
 				from: School,
@@ -543,22 +539,18 @@ describe("DataloaderService", () => {
 			}),
 		]);
 
-		// Verify initial loads
 		expect(berkeleyStudents.length).toBe(3);
 		expect(oaklandStudents.length).toBe(3);
 		expect(loadBySchoolIdsSpy).toHaveBeenCalledTimes(1); // Batched into single call
 
-		// Clear cache only for Berkeley High
 		dataloaderService.clear({
 			from: School,
 			field: "students",
 			data: berkeleyHigh,
 		});
 
-		// Reset the spy to track new calls
 		loadBySchoolIdsSpy.mockClear();
 
-		// Reload students for both schools
 		const [reloadedBerkeleyStudents, reloadedOaklandStudents] = await Promise.all([
 			dataloaderService.load({
 				from: School,
@@ -572,17 +564,13 @@ describe("DataloaderService", () => {
 			}),
 		]);
 
-		// Verify that only Berkeley High's data was reloaded
 		expect(loadBySchoolIdsSpy).toHaveBeenCalledTimes(1);
 		expect(loadBySchoolIdsSpy).toHaveBeenCalledWith([berkeleyHigh.id]);
 
-		// Oakland Tech's students should be from cache (strictly equal)
 		expect(reloadedOaklandStudents).toBe(oaklandStudents);
 
-		// Berkeley High's students should be new (not strictly equal)
 		expect(reloadedBerkeleyStudents).not.toBe(berkeleyStudents);
 
-		// Verify the reloaded data is still valid
 		expect(reloadedBerkeleyStudents.length).toBe(3);
 		for (const student of reloadedBerkeleyStudents) {
 			expect(student.schoolId).toBe(berkeleyHigh.id);
@@ -706,7 +694,6 @@ describe("DataloaderService", () => {
 			}));
 		});
 
-		// Prime the dataloader with the custom team
 		dataloaderService.prime(
 			{
 				from: Department,
@@ -716,20 +703,16 @@ describe("DataloaderService", () => {
 			customTeam,
 		);
 
-		// Spy on repository to ensure it's not called
 		const loadByDepartmentIdsSpy = vi.spyOn(EmployeeRepository, "loadByDepartmentIds");
 
-		// Load the employees - should come from primed cache
 		const loadedEmployees = await dataloaderService.load({
 			from: Department,
 			field: "employees",
 			data: department,
 		});
 
-		// Verify the repository was not called
 		expect(loadByDepartmentIdsSpy).not.toHaveBeenCalled();
 
-		// Verify we got our primed team
 		expect(loadedEmployees).toBe(customTeam);
 		expect(loadedEmployees).toHaveLength(3);
 		expect(loadedEmployees).toEqual(
@@ -758,44 +741,36 @@ describe("DataloaderService", () => {
 			]),
 		);
 
-		// Create another department
 		const anotherDepartment = factory.new(Department);
 
-		// Load employees for another department - should hit repository
 		await dataloaderService.load({
 			from: Department,
 			field: "employees",
 			data: anotherDepartment,
 		});
 
-		// Verify repository was called for the non-primed department
 		expect(loadByDepartmentIdsSpy).toHaveBeenCalledTimes(1);
 		expect(loadByDepartmentIdsSpy).toHaveBeenCalledWith([anotherDepartment.id]);
 
-		// Clear the primed value
 		dataloaderService.clear({
 			from: Department,
 			field: "employees",
 			data: department,
 		});
 
-		// Reset spy
 		loadByDepartmentIdsSpy.mockClear();
 
-		// Load again - should hit repository now
 		const reloadedEmployees = await dataloaderService.load({
 			from: Department,
 			field: "employees",
 			data: department,
 		});
 
-		// Verify repository was called after clearing
 		expect(loadByDepartmentIdsSpy).toHaveBeenCalledTimes(1);
 		expect(loadByDepartmentIdsSpy).toHaveBeenCalledWith([department.id]);
 
-		// Verify we got different employees
 		expect(reloadedEmployees).not.toBe(customTeam);
-		expect(reloadedEmployees).toHaveLength(5); // Repository creates 5 employees per department
+		expect(reloadedEmployees).toHaveLength(5);
 		for (const employee of reloadedEmployees) {
 			expect(employee).toBeInstanceOf(Employee);
 			expect(employee.departmentId).toBe(department.id);

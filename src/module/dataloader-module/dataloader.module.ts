@@ -1,8 +1,8 @@
 import { type DynamicModule, OnModuleInit } from "@nestjs/common";
 import { LazyMetadataContainer } from "../../utils";
-import { CacheMapService, CacheMapServiceOptions } from "../cache-map/cache-map.service";
-import { DataloaderService } from "../dataloader-service/dataloader.service";
-import { ExplorerService } from "../explorer-service/explorer.service";
+import { CacheMapService, CacheMapServiceOptions } from "../cache-map";
+import { DataloaderService } from "../dataloader-service";
+import { ExplorerService } from "../explorer-service";
 
 type DataloaderModuleOptions = CacheMapServiceOptions;
 

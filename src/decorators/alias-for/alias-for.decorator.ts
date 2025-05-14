@@ -3,7 +3,7 @@ import { AliasForReturnFn } from "../../types/dataloader.types";
 import { LazyMetadataContainer } from "../../utils";
 
 /**
- * You can't use decorators in abstract classes or interfaces
+ * You can't use decorators in abstract classes or interfaces,
  * so you can use this decorator to provide the class that provides the DataloaderHandler for a concrete class.
  */
 export function AliasFor(provider: AliasForReturnFn) {
