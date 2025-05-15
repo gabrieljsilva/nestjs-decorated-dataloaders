@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { CategoryEntity } from "../category/category.entity";
-import { PostEntity } from "../post/post.entity";
+import { CategoryEntity } from "./category.entity";
+import { PostEntity } from "./post.entity";
 
 @ObjectType()
 export class CategoryPostEntity {

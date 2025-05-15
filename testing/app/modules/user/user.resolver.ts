@@ -1,9 +1,9 @@
 import { Inject } from "@nestjs/common";
 import { Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { DataloaderService } from "../../../../src";
-import { GroupEntity } from "../group/group.entity";
-import { PhotoEntity } from "../photo/photo.entity";
-import { UserEntity } from "./user.entity";
+import { GroupEntity } from "../../entities/group.entity";
+import { PhotoEntity } from "../../entities/photo.entity";
+import { UserEntity } from "../../entities/user.entity";
 import { UserService } from "./user.service";
 
 @Resolver(() => UserEntity)

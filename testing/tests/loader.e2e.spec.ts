@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { expect } from "vitest";
 import { gql } from "../__generated__";
 import { startTestEnvironment } from "../testing-environment/start-test-environment";
 import { TestClientService } from "../testing-environment/test-client/test-client.service";
@@ -111,7 +112,11 @@ describe("loader", () => {
 
 		const response = await client.query({ query });
 
-		for (const post of response.data.posts) {
+		const posts = response.data.posts;
+
+		expect(posts.length > 0).toBeTruthy();
+
+		for (const post of posts) {
 			expect(post).toEqual({
 				id: expect.any(Number),
 				title: expect.any(String),
@@ -119,6 +124,8 @@ describe("loader", () => {
 				createdAt: expect.any(String),
 				categories: expect.any(Array),
 			});
+
+			expect(post.categories.length > 0).toBeTruthy();
 
 			for (const category of post.categories) {
 				expect(category).toEqual({

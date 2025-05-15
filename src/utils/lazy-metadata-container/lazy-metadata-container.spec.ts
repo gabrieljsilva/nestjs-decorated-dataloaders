@@ -102,11 +102,6 @@ describe("LazyMetadataContainer", () => {
 	});
 
 	it("should add dataloader handler metadata", () => {
-		class Dog {
-			id: number;
-			name: string;
-		}
-
 		class DogHandler {
 			handle() {}
 		}

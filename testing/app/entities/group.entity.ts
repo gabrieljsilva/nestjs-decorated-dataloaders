@@ -1,9 +1,9 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { CategoryPostEntity } from "../category-post/category-post.entity";
+import { UserGroupEntity } from "./user-group.entity";
 
 @ObjectType()
-export class CategoryEntity {
+export class GroupEntity {
 	@Field(() => Int)
 	@FactoryField((faker) => faker.number.int({ min: 1, max: 999999999 }))
 	id: number;
@@ -12,6 +12,6 @@ export class CategoryEntity {
 	@FactoryField((faker) => faker.lorem.word())
 	name: string;
 
-	@FactoryRelationField(() => [CategoryPostEntity])
-	categoryPosts: CategoryPostEntity[];
+	@FactoryRelationField(() => [UserGroupEntity])
+	userGroups: Array<UserGroupEntity>;
 }

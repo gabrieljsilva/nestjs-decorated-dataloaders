@@ -1,8 +1,8 @@
 import { Inject } from "@nestjs/common";
 import { Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { DataloaderService } from "../../../../src";
-import { PostEntity } from "../post/post.entity";
-import { CommentEntity } from "./comment.entity";
+import { CommentEntity } from "../../entities/comment.entity";
+import { PostEntity } from "../../entities/post.entity";
 import { CommentService } from "./comment.service";
 
 @Resolver(() => CommentEntity)

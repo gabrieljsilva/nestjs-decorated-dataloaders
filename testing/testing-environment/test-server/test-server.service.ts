@@ -11,8 +11,9 @@ export class TestServerService implements OnModuleInit {
 			imports: [AppModule],
 		}).compile();
 		const app = module.createNestApplication({
-			logger: new Logger(),
+			logger: Logger,
 		});
+
 		await app.init();
 		this.app = app;
 	};

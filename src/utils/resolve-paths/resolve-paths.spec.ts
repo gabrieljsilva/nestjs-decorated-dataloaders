@@ -74,4 +74,32 @@ describe("resolvePath", () => {
 		const entity = { a: { b: 42 } };
 		expect(resolvePath(entity, "a.b.c")).toBeUndefined();
 	});
+
+	/**
+	 * Function-Based Tests
+	 */
+
+	it("should use the function to extract the value", () => {
+		const entity = { a: 42, b: "text" };
+		const pathFn = (e: any) => e.a;
+		expect(resolvePath(entity, pathFn)).toBe(42);
+	});
+
+	it("should handle complex function logic", () => {
+		const entity = { a: 1, b: 2, c: 3 };
+		const pathFn = (e: any) => e.a + e.b + e.c;
+		expect(resolvePath(entity, pathFn)).toBe(6);
+	});
+
+	it("should handle functions that return undefined", () => {
+		const entity = { a: 42 };
+		const pathFn = (e: any) => e.nonExistent;
+		expect(resolvePath(entity, pathFn)).toBeUndefined();
+	});
+
+	it("should handle functions with array inputs", () => {
+		const entity = [{ id: 1 }, { id: 2 }, { id: 3 }];
+		const pathFn = (e: any) => e.map((item: any) => item.id);
+		expect(resolvePath(entity, pathFn)).toEqual([1, 2, 3]);
+	});
 });

@@ -1,6 +1,14 @@
-export function resolvePath(entity: any, path: string): any {
+import { MapperFN } from "../../types/dataloader.types";
+
+export function resolvePath(entity: any, path: string | MapperFN): any {
 	if (!path || !entity) return undefined;
 
+	// If the path is a function, call it with the entity
+	if (typeof path === "function") {
+		return path(entity);
+	}
+
+	// Otherwise, handle the string path as before
 	let current = entity;
 	const parts: string[] = path.split(".");
 

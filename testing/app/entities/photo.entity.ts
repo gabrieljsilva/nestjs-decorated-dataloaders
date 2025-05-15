@@ -1,8 +1,8 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryField, FactoryRelationField } from "decorated-factory";
-import { Load } from "../../../../src";
-import { LOAD_USER_BY_PHOTO } from "../../constants";
-import { UserEntity } from "../user/user.entity";
+import { Load } from "../../../src";
+import { LOAD_USER_BY_PHOTO } from "../constants";
+import { UserEntity } from "./user.entity";
 
 @ObjectType()
 export class PhotoEntity {

@@ -1,4 +1,4 @@
-import { RelationType } from "../../types/dataloader.types";
+import { MapperFN, RelationType } from "../../types/dataloader.types";
 import { LazyMetadataContainer } from "../../utils";
 import { Load } from "./load.decorator";
 
@@ -420,5 +420,47 @@ describe("Load Decorator", () => {
 			key: "id",
 			parentKey: "teamId",
 		});
+	});
+
+	it("should handle function-based key and parentKey mappings", () => {
+		class CompositeKeyEntity {
+			id: number;
+			type: string;
+		}
+
+		class Parent {
+			id: number;
+			type: string;
+
+			@Load(() => [CompositeKeyEntity], {
+				key: (parent) => `${parent.id}-${parent.type}`,
+				parentKey: (child) => `${child.id}-${child.type}`,
+				handler: "LOAD_ENTITIES_BY_COMPOSITE_KEY",
+			})
+			entities: CompositeKeyEntity[];
+		}
+
+		LazyMetadataContainer.loadRelationshipMetadata();
+
+		const parentRelations = LazyMetadataContainer.loadedRelationships.get(Parent);
+		const entitiesMetadata = parentRelations?.get("entities");
+
+		expect(typeof entitiesMetadata.key).toBe("function");
+		expect(typeof entitiesMetadata.parentKey).toBe("function");
+
+		const parent = new Parent();
+		parent.id = 1;
+		parent.type = "test";
+
+		const mapperFN = entitiesMetadata.key as MapperFN;
+
+		expect(mapperFN(parent)).toBe("1-test");
+
+		const child = new CompositeKeyEntity();
+		child.id = 2;
+		child.type = "child";
+
+		const parentMapperFN = entitiesMetadata.key as MapperFN;
+		expect(parentMapperFN(child)).toBe("2-child");
 	});
 });

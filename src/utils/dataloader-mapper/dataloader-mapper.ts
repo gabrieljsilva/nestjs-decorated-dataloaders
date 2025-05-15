@@ -35,12 +35,13 @@ export class DataloaderMapper {
 					}
 					entitiesMappedByKey.get(key).push(entity);
 				}
-			} else if (joinKeyOrKeys) {
-				if (!entitiesMappedByKey.has(joinKeyOrKeys)) {
-					entitiesMappedByKey.set(joinKeyOrKeys, []);
-				}
-				entitiesMappedByKey.get(joinKeyOrKeys).push(entity);
+
+				continue;
 			}
+			if (!entitiesMappedByKey.has(joinKeyOrKeys)) {
+				entitiesMappedByKey.set(joinKeyOrKeys, []);
+			}
+			entitiesMappedByKey.get(joinKeyOrKeys).push(entity);
 		}
 
 		return keys.map((key) => entitiesMappedByKey.get(key) || []);
@@ -59,10 +60,10 @@ export class DataloaderMapper {
 						entitiesMappedByKey.set(key, entity);
 					}
 				}
-			} else if (joinKeyOrKeys) {
-				if (!entitiesMappedByKey.has(joinKeyOrKeys)) {
-					entitiesMappedByKey.set(joinKeyOrKeys, entity);
-				}
+				continue;
+			}
+			if (!entitiesMappedByKey.has(joinKeyOrKeys)) {
+				entitiesMappedByKey.set(joinKeyOrKeys, entity);
 			}
 		}
 

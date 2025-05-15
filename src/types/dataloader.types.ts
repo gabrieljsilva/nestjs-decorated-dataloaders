@@ -10,6 +10,7 @@ export type JoinProperty = string | number;
 export type AliasForReturnFn = <T = any>() => Type<T> | Function;
 export type ParentFN<T = unknown> = () => Type<T>;
 export type ChildFN<T = unknown> = () => Type<T> | [Type<T>];
+export type MapperFN<T = any> = (entity: T) => JoinProperty | JoinProperty[];
 
 export interface DataloaderHandlerMetadata {
 	provide: Type;
@@ -17,8 +18,8 @@ export interface DataloaderHandlerMetadata {
 }
 
 export interface CommonRelationshipOptions<Parent = any, Child = any> {
-	key: Paths<Parent>;
-	parentKey: Paths<Child>;
+	key: Paths<Parent> | MapperFN<Parent>;
+	parentKey: Paths<Child> | MapperFN<Child>;
 	handler: string;
 }
 
@@ -39,8 +40,8 @@ export type FieldName = string;
 export type LoadedRelationships = Map<Type, Map<FieldName, LoadedRelationship<any, any>>>;
 export type HandlerKey = string;
 export interface LoadOptions<Child, Parent> {
-	key: Paths<Parent>;
-	parentKey: Paths<Child>;
+	key: Paths<Parent> | MapperFN<Parent>;
+	parentKey: Paths<Child> | MapperFN<Child>;
 	handler: string;
 }
 

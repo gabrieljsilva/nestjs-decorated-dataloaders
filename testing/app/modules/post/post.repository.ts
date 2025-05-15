@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { DataloaderHandler } from "../../../../src";
 import { LOAD_POSTS_BY_COMMENTS } from "../../constants";
-import { DatabaseService } from "../database/database.service";
-import { PostEntity } from "./post.entity";
+import { DatabaseService } from "../../database/database/database.service";
+import { PostEntity } from "../../entities/post.entity";
 
 @Injectable()
 export class PostRepository {

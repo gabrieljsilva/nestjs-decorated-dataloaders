@@ -18,9 +18,15 @@ describe("resolvePath", () => {
 	const factory = new Factory(faker);
 	const users = factory.newList(UserEntity, 1000);
 
-	bench("benchmarking of resolve paths", () => {
+	bench("String-Based Resolve Paths", () => {
 		for (const user of users) {
 			resolvePath(user, "id");
+		}
+	});
+
+	bench("Function-Based Resolve Paths", () => {
+		for (const user of users) {
+			resolvePath(user, (user) => user.id);
 		}
 	});
 });

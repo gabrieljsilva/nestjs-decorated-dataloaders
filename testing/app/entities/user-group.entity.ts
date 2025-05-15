@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { FactoryRelationField } from "decorated-factory";
-import { GroupEntity } from "../group/group.entity";
-import { UserEntity } from "../user/user.entity";
+import { GroupEntity } from "./group.entity";
+import { UserEntity } from "./user.entity";
 
 @ObjectType()
 export class UserGroupEntity {

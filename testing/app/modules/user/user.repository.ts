@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { DataloaderHandler } from "../../../../src";
 import { LOAD_USER_BY_PHOTO } from "../../constants";
-import { DatabaseService } from "../database/database.service";
+import { DatabaseService } from "../../database/database/database.service";
 
 @Injectable()
 export class UserRepository {

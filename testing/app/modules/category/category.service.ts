@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { CategoryEntity } from "./category.entity";
+import { CategoryEntity } from "../../entities/category.entity";
 import { CategoryRepository } from "./category.repository";
 
 @Injectable()
