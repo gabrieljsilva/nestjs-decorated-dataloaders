@@ -1,9 +1,7 @@
 # NestJS Decorated Dataloaders
 
-`nestjs-decorated-dataloaders` is a module designed to simplify the creation of GraphQL dataloaders using decorators, solving the N+1 problem in a declarative and scalable way.
-
-
-This module minimizes database queries by batching and caching data fetches, optimizing performance and scalability.
+A lightweight wrapper around Dataloader that lets you declare where to batch and cache instead of wiring it by hand.
+Add a @Load decorator to any field, register a handler, and the N+1 query problem is gone.
 
 ---
 
@@ -39,20 +37,20 @@ import { DataloaderModule } from "nestjs-decorated-dataloaders";
       autoSchemaFile: true,
     }),
     DataloaderModule.forRoot({
-      cache: true,
-      maxBatchSize: 100,
-      getCacheMap: () => new LRUMap(100),
-      name: "MyAwesomeDataloader",
+        name: "MyAwesomeDataloader",
+        cache: true,
+        maxBatchSize: 100,
+        getCacheMap: () => new LRUMap(100),
     }),
   ],
 })
 export class AppModule {}
 ```
 
+- **`name`**: Names the dataloader for better tracking and debugging.
 - **`cache`**: Enables caching.
 - **`maxBatchSize`**: Limits the maximum number of batched requests.
 - **`getCacheMap`**: Defines a custom cache implementation (e.g., LRU Cache).
-- **`name`**: Names the dataloader for better tracking and debugging.
 
 ---
 
@@ -61,9 +59,19 @@ export class AppModule {}
 ### **PhotoEntity**
 
 ```typescript
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Load } from "nestjs-decorated-dataloaders";
+import { UserEntity } from "./user.entity";
+
+@ObjectType()
 export class PhotoEntity {
+  @Field(() => Int)
   id: number;
+
+  @Field(() => String)
   url: string;
+
+  @Field(() => Number)
   userId: number;
 }
 ```
@@ -71,16 +79,26 @@ export class PhotoEntity {
 ### **UserEntity**
 
 ```typescript
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Load } from "nestjs-decorated-dataloaders";
 import { PhotoEntity } from "./photo.entity";
 
+@ObjectType()
 export class UserEntity {
+  @Field(() => Int)
   id: number;
+
+  @Field(() => String)
   name: string;
 
+  @Field(() => Date)
+  createdAt: Date;
+
+  // One-to-one relationship with PhotoEntity
   @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
   photo: PhotoEntity;
 
+  // One-to-many relationship with PhotoEntity
   @Load(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
   photos: PhotoEntity[];
 }
@@ -93,13 +111,31 @@ export class UserEntity {
 Dataloader handlers define how data is fetched from the data source. Handlers are tied to specific dataloaders using the `@DataloaderHandler` decorator.
 
 ```typescript
+import { Inject, Injectable } from "@nestjs/common";
 import { DataloaderHandler } from "nestjs-decorated-dataloaders";
-import { PhotoEntity } from "./photo.entity";
+import { PhotoEntity } from "../../entities/photo.entity";
+import { DatabaseService } from "../database/database.service";
 
-export class PhotoService {
-  @DataloaderHandler("LOAD_PHOTOS_BY_USER_ID")
-  async loadPhotosByUserIds(userIds: number[]): Promise<PhotoEntity[]> {
-    // Replace with actual data fetching logic
+// tip: define constants for handler keys in a separated file
+export const LOAD_PHOTOS_BY_USER = "LOAD_PHOTOS_BY_USER";
+
+@Injectable()
+export class PhotoRepository {
+  constructor(
+    @Inject(DatabaseService)
+    private readonly database: DatabaseService,
+  ) {}
+    
+  /**
+   * This method will be called by the dataloader with batched user IDs
+   */
+  @DataloaderHandler(LOAD_PHOTOS_BY_USER)
+  async findAllByUsersIds(usersIds: number[]): Promise<PhotoEntity[]> {
+    // Fetch all photos from some data source
+    const photos = await this.database.getPhotos();
+
+    // Filter photos by the batch of user IDs
+    return photos.filter((photo) => usersIds.includes(photo.userId));
   }
 }
 ```
@@ -111,23 +147,31 @@ export class PhotoService {
 Resolvers use the `DataloaderService` to load related entities, ensuring requests are batched and cached.
 
 ```typescript
-import { Resolver, ResolveField, Parent } from "@nestjs/graphql";
+import { Inject } from "@nestjs/common";
+import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { DataloaderService } from "nestjs-decorated-dataloaders";
-import { UserEntity } from "./user.entity";
-import { PhotoEntity } from "./photo.entity";
+import { GroupEntity } from "../entities/group.entity";
+import { PhotoEntity } from "../entities/photo.entity";
+import { UserEntity } from "../entities/user.entity";
 
-@Resolver(UserEntity)
+@Resolver(() => UserEntity)
 export class UserResolver {
-  constructor(private readonly dataloaderService: DataloaderService) {}
-
-  @ResolveField(() => PhotoEntity)
-  async photo(@Parent() user: UserEntity) {
-    return this.dataloaderService.load({ from: UserEntity, field: "photo", data: user });
-  }
-
+  constructor(
+    @Inject(DataloaderService)
+    private readonly dataloaderService: DataloaderService,
+  ) {}
+    
+  /**
+   * This resolver field uses the dataloader to fetch photos for a user
+   * The dataloader will batch and cache requests for optimal performance
+   */
   @ResolveField(() => [PhotoEntity])
   async photos(@Parent() user: UserEntity) {
-    return this.dataloaderService.load({ from: UserEntity, field: "photos", data: user });
+    return this.dataloaderService.load({ 
+      from: UserEntity,
+      field: "photos",
+      data: user
+    });
   }
 }
 ```
@@ -135,6 +179,86 @@ export class UserResolver {
 ---
 
 ## **Advanced Concepts**
+
+### **Function-Based Mapper**
+
+Function-Based Mapper allows you to use functions instead of string paths for the `key` and `parentKey` properties in the `@Load` decorator. This is particularly useful when you need to work with composite keys or when you need more complex mapping logic.
+
+```typescript
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Load } from "nestjs-decorated-dataloaders";
+import { CategoryPostEntity } from "./category-post.entity";
+import { CategoryEntity } from "./category.entity";
+
+@ObjectType()
+export class PostEntity {
+  @Field(() => Int)
+  id: number;
+
+  @Field(() => String)
+  title: string;
+
+  @Field(() => String)
+  content: string;
+
+  @Field(() => String)
+  createdAt: string;
+
+  // Relationship with CategoryPostEntity for the many-to-many relationship
+  categoryPosts: CategoryPostEntity[];
+
+  /**
+   * Using Function-Based Mapper for complex relationships
+   * This handles a many-to-many relationship through a join table
+   */
+  @Load(() => [CategoryEntity], {
+    key: (category) => category.id,
+    parentKey: (post) => post.categoryPosts.map((cp) => cp.postId),
+    handler: "LOAD_CATEGORY_BY_POSTS",
+  })
+  categories: CategoryEntity[];
+}
+```
+
+In this example, the `key` function extracts the `id` from the category entity, and the `parentKey` function maps through the `categoryPosts` array to extract all `postId` values.
+
+#### **Benefits of Function-Based Mapper**
+
+- **Complex Mapping**: You can implement complex mapping logic that goes beyond simple property access.
+- **Composite Keys**: You can create composite keys by combining multiple fields.
+- **Flexibility**: You can use any JavaScript expression to compute the key.
+- **Performance**: Function-based mappers are more CPU efficient compared to string-based mappers.
+
+### **Type Safety**
+
+You can use TypeScript generics to ensure type safety when declaring a Dataloader field. 
+
+```typescript
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Load } from "nestjs-decorated-dataloaders";
+import { PhotoEntity } from "./photo.entity";
+
+@ObjectType()
+export class UserEntity {
+  @Field(() => Int)
+  id: number;
+
+  @Field(() => String)
+  name: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+  
+  @Load<PhotoEntity, UserEntity>(() => [PhotoEntity], {
+    key: (user) => user.id,
+    parentKey: (photo) => photo.userId,
+    handler: "LOAD_PHOTOS_BY_USER",
+  })
+  photos: Array<PhotoEntity>;
+}
+```
+
+In this example, the `key` function is typed to receive a `UserEntity` and the `parentKey` function is typed to receive a `PhotoEntity`.
 
 ### **Handling Circular Dependencies**
 Circular dependencies between entities (e.g., User ↔ Photo) can cause metadata resolution errors when using reflect-metadata. For example:
@@ -167,17 +291,13 @@ Generic Type Erasure: reflect-metadata cannot infer generic types like Relation<
 
 Explicit Type Declaration: You must manually specify the wrapped type (e.g., Relation<Photo>) to retain type safety in your code.
 
-> **Important Notes**
+ **Important Notes**
 Use Relation<T> only for circular dependencies. For non-circular references, use direct types (e.g., Photo instead of Relation<Photo>).
 Ensure the generic type (e.g., Photo inside Relation<Photo>) is explicitly declared to avoid type inference issues.
 
 ### **Aliases**
 
-Aliases allow you to link a dataloader handler to an abstract class, which is especially useful when working with more complex architectures that include abstract or shared classes.
-
-> #### **Why Use Aliases?**
-> Sometimes you may want to map a dataloader handler to an abstract class that doesn't allow decorators. Aliases provide a way to assign a handler to such cases.
-
+Aliases let you associate a dataloader handler with an abstract class, offering a simple way to handle cases where decorators can't be used, especially in complex architectures with shared or abstract classes.
 #### **Using Aliases**
 
 ```typescript
@@ -187,7 +307,7 @@ export class ConcretePhotoService {}
 
 This allows `PhotoService` to serve as the dataloader handler for `AbstractPhotoService`.
 
-#### **Under the Hood**
+### **Under the Hood**
 
 `nestjs-decorated-dataloaders` is built on top of the GraphQL Dataloader library. At its core, a dataloader is a mechanism for batching and caching database or API requests, reducing the number of round trips required to fetch related data.
 
@@ -201,54 +321,3 @@ This allows `PhotoService` to serve as the dataloader handler for `AbstractPhoto
 By using decorators like `@Load` and `@DataloaderHandler`, this module streamlines dataloader setup, making it simple to handle related entities in GraphQL resolvers without manual dataloader instantiation or dependency injection.
 
 ---
-
-## **Migration Guide**
-
-### **Migrating from ****************`@LoadOne`**************** and ****************`@LoadMany`**************** Decorators**
-
-Replace the old `@LoadOne` and `@LoadMany` decorators with the new `@Load` decorator. Ensure the options are correctly mapped to the new syntax.
-
-#### **Old Code**
-
-```typescript
-import { LoadOne } from "nestjs-decorated-dataloaders";
-
-export class UserEntity {
-  id: number;
-
-  @LoadOne(() => PhotoEntity, { by: "id", where: "userId", on: "photoLoader" })
-  photo: PhotoEntity;
-}
-```
-
-#### **New Code**
-
-```typescript
-import { Load } from "nestjs-decorated-dataloaders";
-
-export class UserEntity {
-  id: number;
-
-  @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
-  photo: PhotoEntity;
-}
-```
-
-### **Migrating DataloaderService Syntax**
-
-Update the `dataloaderService.load` syntax to use the new parameters.
-
-#### **Old Code**
-
-```typescript
-this.dataloaderService.load(PhotoEntity, { from: UserEntity, by: [user] });
-```
-
-#### **New Code**
-
-```typescript
-this.dataloaderService.load({ from: UserEntity, field: "photo", data: user });
-```
-
----
-
