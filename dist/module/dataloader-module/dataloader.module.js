@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataloaderModule = void 0;
 const utils_1 = require("../../utils");
-const cache_map_service_1 = require("../cache-map/cache-map.service");
-const dataloader_service_1 = require("../dataloader-service/dataloader.service");
-const explorer_service_1 = require("../explorer-service/explorer.service");
+const cache_map_1 = require("../cache-map");
+const dataloader_service_1 = require("../dataloader-service");
+const explorer_service_1 = require("../explorer-service");
 class DataloaderModule {
     static forRoot(options = {}) {
         return {
@@ -13,8 +13,8 @@ class DataloaderModule {
                 dataloader_service_1.DataloaderService,
                 explorer_service_1.ExplorerService,
                 {
-                    provide: cache_map_service_1.CacheMapService,
-                    useValue: new cache_map_service_1.CacheMapService(options),
+                    provide: cache_map_1.CacheMapService,
+                    useValue: new cache_map_1.CacheMapService(options),
                 },
             ],
             exports: [dataloader_service_1.DataloaderService],

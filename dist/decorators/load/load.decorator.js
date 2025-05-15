@@ -9,7 +9,7 @@ function Load(child, options) {
         utils_1.LazyMetadataContainer.addRelationshipMetadata({
             key: key,
             parentKey: parentKey,
-            handler: handler,
+            handler,
             parentFN: parent,
             explicitChildFN: child,
             originalFieldName: propertyKey,

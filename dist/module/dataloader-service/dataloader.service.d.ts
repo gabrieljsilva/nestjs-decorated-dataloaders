@@ -1,15 +1,6 @@
-import { Type } from "@nestjs/common";
+import { LoadParams, PropertyType } from "../../types/dataloader.types";
 import { CacheMapService } from "../cache-map";
 import { ExplorerService } from "../explorer-service";
-type PropertyType<T, K extends keyof T> = T[K];
-interface CommonLoadParams<Parent> {
-    from: Type<Parent>;
-    args?: any[];
-}
-interface LoadParams<Parent, Field extends keyof Parent> extends CommonLoadParams<Parent> {
-    field: Field;
-    data: Parent;
-}
 /**
  * This service allows you to load data from a provider using a dataloader.
  * A Dataloader instance is created for each relation and for each request.
@@ -31,4 +22,3 @@ export declare class DataloaderService {
     private getOrCreateDataloader;
     private createDataloader;
 }
-export {};

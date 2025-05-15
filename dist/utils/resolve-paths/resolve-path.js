@@ -4,6 +4,11 @@ exports.resolvePath = resolvePath;
 function resolvePath(entity, path) {
     if (!path || !entity)
         return undefined;
+    // If the path is a function, call it with the entity
+    if (typeof path === "function") {
+        return path(entity);
+    }
+    // Otherwise, handle the string path as before
     let current = entity;
     const parts = path.split(".");
     for (const part of parts) {
