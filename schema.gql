@@ -18,10 +18,15 @@ type PostEntity {
   id: Int!
   title: String!
   content: String!
-  createdAt: String!
+  createdAt: DateTime!
   comments: [CommentEntity!]!
   categories: [CategoryEntity!]!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type GroupEntity {
   id: Int!
@@ -42,11 +47,6 @@ type UserEntity {
   photos: [PhotoEntity!]!
   groups: [GroupEntity!]!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Query {
   users: [UserEntity!]!

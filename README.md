@@ -1,7 +1,7 @@
 # NestJS Decorated Dataloaders
 
 A lightweight wrapper around Dataloader that lets you declare where to batch and cache instead of wiring it by hand.
-Add a @Load decorator to any field, register a handler, and the N+1 query problem is gone.
+Add an @Load decorator to any field, register a handler, and the N+1 query problem is gone.
 
 ---
 
@@ -95,12 +95,19 @@ export class UserEntity {
   createdAt: Date;
 
   // One-to-one relationship with PhotoEntity
-  @Load(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
+  @Load<PhotoEntity, UserEntity>(() => PhotoEntity, { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
   photo: PhotoEntity;
 
   // One-to-many relationship with PhotoEntity
-  @Load(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
+  @Load<PhotoEntity, UserEntity>(() => [PhotoEntity], { key: "id", parentKey: "userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
   photos: PhotoEntity[];
+  
+  // Many-to-many relationship with PhotoEntity
+  
+  userPhotos: UserPhotoEntity[]; // intermediate table
+  
+  @Load<PhotoEntity, UserEntity>(() => [PhotoEntity], { key: "id", parentKey: "userPhotos.userId", handler: "LOAD_PHOTOS_BY_USER_ID" })
+  photosByUsers: PhotoEntity[];
 }
 ```
 
@@ -132,10 +139,13 @@ export class PhotoRepository {
   @DataloaderHandler(LOAD_PHOTOS_BY_USER)
   async findAllByUsersIds(usersIds: number[]): Promise<PhotoEntity[]> {
     // Fetch all photos from some data source
-    const photos = await this.database.getPhotos();
+    const photos = await this.database.getPhotos({
+        where: {
+            userId: { in: usersIds }
+        }
+    });
 
-    // Filter photos by the batch of user IDs
-    return photos.filter((photo) => usersIds.includes(photo.userId));
+    return photos
   }
 }
 ```
@@ -211,16 +221,16 @@ export class PostEntity {
    * Using Function-Based Mapper for complex relationships
    * This handles a many-to-many relationship through a join table
    */
-  @Load(() => [CategoryEntity], {
-    key: (category) => category.id,
-    parentKey: (post) => post.categoryPosts.map((cp) => cp.postId),
+  @Load<CategoryEntity, PostEntity>(() => [CategoryEntity], {
+    key: (post) => post.categoryPosts.map((cp) => cp.postId),
+    parentKey: (category) => category.id,
     handler: "LOAD_CATEGORY_BY_POSTS",
   })
   categories: CategoryEntity[];
 }
 ```
 
-In this example, the `key` function extracts the `id` from the category entity, and the `parentKey` function maps through the `categoryPosts` array to extract all `postId` values.
+In this example, the `key` function extracts the `postId` values from the `categoryPosts` array, and the `parentKey` function maps through the `categoryPosts` array to extract all `id` values.
 
 #### **Benefits of Function-Based Mapper**
 
@@ -312,7 +322,7 @@ This allows `PhotoService` to serve as the dataloader handler for `AbstractPhoto
 `nestjs-decorated-dataloaders` is built on top of the GraphQL Dataloader library. At its core, a dataloader is a mechanism for batching and caching database or API requests, reducing the number of round trips required to fetch related data.
 
 - **Batching**: Dataloader batches multiple requests for the same resource into a single query. This ensures that, rather than issuing one query per entity (e.g., fetching one photo per user), the dataloader combines them into a single query that fetches all the photos for the users in one go.
-- **Caching**: Dataloader caches query results, preventing redundant queries for the same data within the same request cycle. This ensures that once a resource is fetched, subsequent requests for the same resource will use the cached data.
+- **Caching**: Dataloader caches query results, preventing redundant queries for the same data within the same request cycle. This ensures that once a resource is fetched, later requests for the same resource will use the cached data.
 
 #### **High-Level Nest.js Abstraction**
 

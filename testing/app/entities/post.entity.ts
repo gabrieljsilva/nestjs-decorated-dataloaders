@@ -19,9 +19,9 @@ export class PostEntity {
 	@FactoryField((faker) => faker.lorem.paragraph())
 	content: string;
 
-	@Field(() => String)
-	@FactoryField((faker) => faker.date.past().toISOString())
-	createdAt: string;
+	@Field(() => Date)
+	@FactoryField((faker) => faker.date.past())
+	createdAt: Date;
 
 	@Load(() => [CommentEntity], { key: "id", parentKey: "postId", handler: LOAD_COMMENTS_BY_POSTS })
 	@FactoryRelationField(() => [CommentEntity], { key: "id", inverseKey: "postId" })
@@ -30,9 +30,9 @@ export class PostEntity {
 	/**
 	 * Using Function-Based Path Resolver for tests
 	 */
-	@Load(() => [CategoryEntity], {
-		key: (category) => category.id,
-		parentKey: (post) => post.categoryPosts.map((cp) => cp.postId),
+	@Load<CategoryEntity, PostEntity>(() => [CategoryEntity], {
+		key: (post) => post.id,
+		parentKey: (category) => category.categoryPosts.map((cp) => cp.postId),
 		handler: LOAD_CATEGORY_BY_POSTS,
 	})
 	@FactoryRelationField(() => [CategoryEntity])
