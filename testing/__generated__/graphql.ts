@@ -51,7 +51,7 @@ export type PostEntity = {
   categories: Array<CategoryEntity>;
   comments: Array<CommentEntity>;
   content: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['Int']['output'];
   title: Scalars['String']['output'];
 };
@@ -76,17 +76,17 @@ export type UserEntity = {
 export type PostsWithCommentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsWithCommentsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string, comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number }> }> };
+export type PostsWithCommentsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: any, comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number }> }> };
 
 export type CommentsWithPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CommentsWithPostsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number, post: { __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string } }> };
+export type CommentsWithPostsQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'CommentEntity', id: number, text: string, postId: number, post: { __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: any } }> };
 
 export type PostsWithCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsWithCategoriesQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: string, categories: Array<{ __typename?: 'CategoryEntity', id: number, name: string }> }> };
+export type PostsWithCategoriesQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'PostEntity', id: number, title: string, content: string, createdAt: any, categories: Array<{ __typename?: 'CategoryEntity', id: number, name: string }> }> };
 
 export type UsersWithPhotosQueryVariables = Exact<{ [key: string]: never; }>;
 
