@@ -1,7 +1,7 @@
 {
 	"name": "@decorated-dataloaders/nestjs",
 	"description": "NestJS adapter for @decorated-dataloaders/core: create graphql dataloaders with decorators in Nest.js.",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"main": "dist/index.cjs.js",
 	"module": "dist/index.esm.mjs",
 	"types": "dist/index.d.ts",
@@ -40,7 +40,7 @@
 		"build": "rollup -c"
 	},
 	"dependencies": {
-		"@decorated-dataloaders/core": "^1.0.0"
+		"@decorated-dataloaders/core": "^0.0.0"
 	},
 	"peerDependencies": {
 		"@nestjs/common": ">=9.0.0",

@@ -22,11 +22,12 @@
 		"test:coverage": "vitest --coverage --run",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
+		"typecheck": "tsc --noEmit -p packages/core/tsconfig.build.json && tsc --noEmit -p packages/nestjs/tsconfig.build.json",
 		"bench": "vitest bench --run",
 		"changeset": "changeset",
 		"version": "changeset version",
 		"publish": "changeset publish",
-		"release": "changeset version && npm run build && changeset publish"
+		"release": "npm run build && changeset publish"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
