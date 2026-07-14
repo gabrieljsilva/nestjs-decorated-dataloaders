@@ -1,7 +1,9 @@
 # compiled output
-/node_modules
+node_modules
 /build
+dist
 .rollup.cache
+.turbo
 # Logs
 logs
 *.log
@@ -54,3 +56,6 @@ pids
 *.pid.lock
 
 coverage
+
+# internal planning
+.plans

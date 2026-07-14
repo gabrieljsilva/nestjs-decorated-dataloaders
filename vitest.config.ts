@@ -2,7 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		include: ["src/**/*.spec.ts"],
+		include: ["packages/*/src/**/*.spec.ts", "tests/**/*.spec.ts"],
 		globals: true,
 		root: "./",
 		mockReset: false,
@@ -11,8 +11,8 @@ export default defineConfig({
 		coverage: {
 			reporter: ["html"],
 			provider: "v8",
-			exclude: ["**/node_modules/**", "**/dist/**", "**/testing/**"],
-			include: ["src/**/*.ts"],
+			exclude: ["**/node_modules/**", "**/dist/**"],
+			include: ["packages/*/src/**/*.ts"],
 		},
 	},
 	plugins: [],

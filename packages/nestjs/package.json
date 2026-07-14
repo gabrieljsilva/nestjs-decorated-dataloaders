@@ -1,0 +1,59 @@
+{
+	"name": "@decorated-dataloaders/nestjs",
+	"description": "NestJS adapter for @decorated-dataloaders/core: create graphql dataloaders with decorators in Nest.js.",
+	"version": "1.0.0",
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.mjs",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.esm.mjs",
+			"require": "./dist/index.cjs.js"
+		}
+	},
+	"license": "MIT",
+	"files": ["dist"],
+	"keywords": [
+		"nestjs",
+		"graphql",
+		"dataloaders",
+		"nestjs-module",
+		"graphql-dataloader",
+		"nestjs-decorators",
+		"n+1-problem",
+		"batching",
+		"caching"
+	],
+	"author": {
+		"email": "contato@gabrieljs.dev",
+		"name": "Gabriel de Jesus Silva",
+		"url": "https://gabrieljs.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gabrieljsilva/nestjs-decorated-dataloaders.git",
+		"directory": "packages/nestjs"
+	},
+	"scripts": {
+		"prebuild": "rimraf -g dist",
+		"build": "rollup -c"
+	},
+	"dependencies": {
+		"@decorated-dataloaders/core": "^1.0.0"
+	},
+	"peerDependencies": {
+		"@nestjs/common": ">=9.0.0",
+		"@nestjs/core": ">=9.0.0",
+		"reflect-metadata": ">=0.2.0"
+	},
+	"devDependencies": {
+		"@nestjs/common": "^11.1.28",
+		"@nestjs/core": "^11.1.28",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
