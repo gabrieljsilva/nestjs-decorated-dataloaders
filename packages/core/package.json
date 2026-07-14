@@ -1,0 +1,48 @@
+{
+	"name": "@decorated-dataloaders/core",
+	"description": "Framework-agnostic dataloaders with decorators: declare relationships on your entities and load them with batching and caching.",
+	"version": "0.0.0",
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.mjs",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.esm.mjs",
+			"require": "./dist/index.cjs.js"
+		}
+	},
+	"license": "MIT",
+	"files": ["dist"],
+	"keywords": [
+		"dataloader",
+		"graphql",
+		"batching",
+		"caching",
+		"decorators",
+		"n+1-problem"
+	],
+	"author": {
+		"email": "contato@gabrieljs.dev",
+		"name": "Gabriel de Jesus Silva",
+		"url": "https://gabrieljs.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gabrieljsilva/nestjs-decorated-dataloaders.git",
+		"directory": "packages/core"
+	},
+	"scripts": {
+		"prebuild": "rimraf -g dist",
+		"build": "rollup -c"
+	},
+	"dependencies": {
+		"dataloader": "^2.2.2"
+	},
+	"peerDependencies": {
+		"reflect-metadata": ">=0.2.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
